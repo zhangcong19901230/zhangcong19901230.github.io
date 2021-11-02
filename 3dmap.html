@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Cesium Demo</title>
+    <script src="Cesium/Cesium.js"></script>
+    <link rel="stylesheet" href="Cesium/Widgets/widgets.css">
+    <style>
+      .infoBox{
+        position: absolute;
+        left: 2%;
+        top: 2%;
+        color: #fffdfb;
+        background: rgba(91, 166, 255, 0.79);
+        display: flex;
+        height: 5%;
+        align-items: center;
+        width: 15%;
+        padding: 1%;
+        font-size: larger;
+      }
+    </style>
+  </head>
+  <body onload="">
+    <div id="cesiumContainer" class="fullSize"></div>
+    <div class="infoBox" id="info">
+      <div>历史耕作轨迹：</div>
+      <div>
+        <button style="width: 100px;height: 30px">轨迹展示</button>
+      </div>
+    </div>
+    <script>
+        const viewer = new Cesium.Viewer("cesiumContainer", {
+            infoBox: false, //Disable InfoBox widget
+            selectionIndicator: false, //Disable selection indicator
+            shouldAnimate: true, // Enable animations
+            //terrainProvider: Cesium.createWorldTerrain(),
+            imageryProvider: new Cesium.ArcGisMapServerImageryProvider({
+                url: 'http://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer'
+            }),
+        });
+
+        //设置时钟开始时间 结束时间 绑定到场景视图
+        var start = Cesium.JulianDate.now();
+        var stop = Cesium.JulianDate.addSeconds(
+            start,
+            1000000,
+            new Cesium.JulianDate()
+        );
+        viewer.clock.startTime = start.clone();
+        viewer.clock.stopTime = stop.clone();
+        viewer.clock.currentTime = start.clone();
+        viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP ; //Loop at the end  是否循环
+        viewer.clock.multiplier = 0.1;
+        viewer.timeline.zoomTo(start, stop);//将视图设置为提供的时间
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(
+                117.065,
+                32.177,
+                720
+            ),
+            endTransform: Cesium.Matrix4.IDENTITY,
+        });
+
+        //定时器模拟数据实时获取
+        let index = 0;
+        let t = 2000;
+        let set1 = setTimeout(fnGetData, t);
+        function fnGetData() {
+            t += Math.random()*10*100;
+            addEveryTimeSample()
+            clearInterval(set1);
+            if (t < 50000) {
+                set1 = setTimeout(fnGetData, t);
+            }
+        }
+        const entityData = [{id:1,name:'1号农机',curPosition:[117.064,32.177],curTime:'2021-08-01 08:00'},{id:2,name:'2号农机',curPosition:[117.061,32.1778],curTime:'2021-08-01 08:00'},{id:3,name:'3号农机',curPosition:[117.065,32.177],curTime:'2021-08-01 08:00'}]
+       function addEveryTimeSample(){
+           index ++;
+           let lont
+           let lat
+           entityData.forEach(function (val) {
+               if(val.id===1) {
+                    lont = 117.062 + Math.random()*0.001
+                    lat = 32.175+Math.random()*0.0001
+               }else if(val.id===2){
+                    lont = 117.065 + Math.random()*0.001
+                    lat = 32.172+Math.random()*0.0001
+               }else {
+                    lont = 117.067 + Math.random()*0.001
+                    lat = 32.173+Math.random()*0.0001
+               }
+               if(index===1){
+                   var property = new Cesium.SampledPositionProperty();
+                   var time = Cesium.JulianDate.addSeconds(
+                       start,
+                       1,
+                       new Cesium.JulianDate()
+                   );
+                   var position = Cesium.Cartesian3.fromDegrees(
+                       val.curPosition[0],
+                       val.curPosition[1],
+                       100
+                   );
+                   property.addSample(time,position)
+                   viewer.entities.add({
+                       id:val.id,
+                       availability: new Cesium.TimeIntervalCollection([
+                           new Cesium.TimeInterval({
+                               start: start,
+                               stop: stop,
+                           }),
+                       ]),
+                       position: property,
+                       orientation: new Cesium.VelocityOrientationProperty(property),
+                       //Load the Cesium plane model to represent the entity
+                       model: {
+                           uri: "../cesiumData/Cesium_Ground.gltf",
+                           minimumPixelSize: 64,
+                       },
+                       label: {
+                           text:val.name
+                       },
+                       path: {
+                           resolution: 1,
+                           material: new Cesium.PolylineGlowMaterialProperty({
+                               glowPower: 0.1,
+                               color: new Cesium.Color ( 1 , 1 , 1 , 1 ),
+                           }),
+                           width: 3,
+                           show:true
+                       },
+                   });
+               }else {
+                   /*let intvelTime = new Cesium.JulianDate.now().secondsOfDay - start.secondsOfDay*/
+                   const intvelTime = Cesium.JulianDate.secondsDifference(
+                       new Cesium.JulianDate.now(),
+                       start
+                   );
+                   var time = Cesium.JulianDate.addSeconds(
+                       start,
+                       intvelTime,
+                       new Cesium.JulianDate()
+                   );
+                   var position = Cesium.Cartesian3.fromDegrees(
+                       lont,
+                       lat,
+                       0
+                   );
+                   let thatTimestop = Cesium.JulianDate.addSeconds(
+                       start,
+                       intvelTime -1,
+                       new Cesium.JulianDate()
+                   );
+                   const curEntity = getEntityById(val.id)
+                   curEntity.position.addSample(time, position);
+                   viewer.clock.currentTime = thatTimestop;
+                   if(curEntity.id === 1){
+
+                   }
+               }
+           })
+       }
+        const historyData = [{id:1,name:'1号农机',data:[{curPosition:[117.064,32.177],curTime:'2013-01-01T09:00:00'},{curPosition:[117.0645,32.177],curTime:'2013-01-02T09:00:05'},{curPosition:[117.0649,32.1775],curTime:'2013-01-03T09:00:10'}]}]
+
+        var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+        handler.setInputAction(function(movement) {
+            var pick = viewer.scene.pick(movement.position);
+            if(Cesium.defined(pick) && (pick.id.id === 1)) {
+                console.log("left click");
+            }
+        },Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+       //跟踪某个机器
+  /*      const target = new Cesium.Cartesian3.fromDegrees(117.064,32.177, 30)
+        function setRoamView() {
+            viewer.trackedEntity = viewer.entities.values[0]
+            if (viewer.entities.values[0]) {
+                const center = viewer.entities.values[0].position.getValue(viewer.clock.currentTime)
+                if (center) {
+                    const vector = new Cesium.Cartesian3(target.x - center.x, target.y - center.y, 300)
+                    viewer.camera.lookAt(center, vector)
+                }
+            }
+        }
+        viewer.scene.preUpdate.addEventListener(setRoamView)*/
+
+        function getEntityById(id) {
+            let curEntity
+            const entitiesCelloction = viewer.entities.values
+            for (let i = 0; i<entitiesCelloction.length; i++)  {
+                if(entitiesCelloction[i].id === id){
+                    curEntity = entitiesCelloction[i]
+                }
+            }
+            return curEntity
+       }
+    </script>
+  </body>
+</html>
