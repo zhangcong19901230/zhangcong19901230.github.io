@@ -1,9 +1,6 @@
 <!--********************************************************************
 * Copyright© 2000 - 2019 SuperMap Software Co.Ltd. All rights reserved.
 *********************************************************************-->
-<!--********************************************************************
-* Copyright© 2000 - 2019 SuperMap Software Co.Ltd. All rights reserved.
-*********************************************************************-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -78,7 +75,7 @@
         var iconFeature = new ol.Feature({
             geometry: new ol.geom.Point([longitude,latitude])
         });
-        var imgsrc = "location.png";
+        var imgsrc = "locaton.png";
         var markstyle = new ol.style.Style({
             image: new ol.style.Icon({
                 src: imgsrc,
@@ -114,7 +111,7 @@
 
         if(window.navigator.geolocation){
             //navigator.geolocation.getCurrentPosition(successfulCallback,failCallback,{enableHeightAcuracy:true,timeout:1000,maximumAge:3000})
-            navigator.geolocation.watchPosition(showPosition,errobak,{provider:'system',coordsType: 'wgs84',enableHighAccuracy:true,timeout:5000,maximumAge:20000});
+            navigator.geolocation.watchPosition(showPosition,showPosition,{provider:'system',coordsType: 'wgs84',enableHighAccuracy:true,timeout:5000,maximumAge:20000});
 
         }else{
 
@@ -125,47 +122,20 @@
     }
     function errobak() {
         alert("GPS网络差");
-        // locationsource.clear();
-        // var latitude = 31.72971;
-        // var longitude = 115.916939;
-        // // alert(latitude+"|||"+longitude);
-        // var iconFeature = new ol.Feature({
-        //     geometry: new ol.geom.Point([longitude,latitude])
-        // });
-        // var imgsrc = "../../static/img/start_trans.png";
-        // var markstyle = new ol.style.Style({
-        //     image: new ol.style.Icon({
-        //         src: imgsrc,
-        //         scale:3
-        //     })
-        // });
-        // iconFeature.setStyle(markstyle);
-        // locationsource.addFeature(iconFeature);
-        // map.setView( new ol.View({
-        //     center: [longitude,latitude],
-        //     zoom: 18,
-        //     projection: 'EPSG:4326'
-        // }));
-        // curcoor = [];
-        // curcoor.push([longitude,latitude]);
     }
 
-
-
-
-
-
-
-
+    
     function showPosition(position)
     {
         locationsource.clear();
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
+        var latitude = 31.33;
+        var longitude = 117.22;
+        /*var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;*/
         var iconFeature = new ol.Feature({
             geometry: new ol.geom.Point([longitude,latitude])
         });
-        var imgsrc = "locaton.png";
+        var imgsrc = "location.png";
         var markstyle = new ol.style.Style({
             image: new ol.style.Icon({
                 src: imgsrc,
@@ -183,30 +153,7 @@
         curcoor.push([longitude,latitude]);
     }
 
-    function successfulCallback(position){
-        locationsource.clear();
-        var latitude = position.coords.latitude-0.0394;
-        var longitude = position.coords.longitude-1.3152;
-        alert(latitude+"|||"+longitude);
-        var iconFeature = new ol.Feature({
-            geometry: new ol.geom.Point([longitude,latitude])
-        });
-        var imgsrc = "../../static/img/start_trans.png";
-        var markstyle = new ol.style.Style({
-            image: new ol.style.Icon({
-                src: imgsrc,
-                scale:3
-            })
-        });
-        iconFeature.setStyle(markstyle);
-        locationsource.addFeature(iconFeature);
-        map.setView( new ol.View({
-            center: [longitude,latitude],
-            zoom: 20,
-            projection: 'EPSG:4326'
-        }));
 
-    }
 
     function failCallback(error){
 
@@ -255,4 +202,3 @@
 </script>
 </body>
 </html>
-
