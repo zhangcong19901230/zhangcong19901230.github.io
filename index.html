@@ -128,10 +128,8 @@
     function showPosition(position)
     {
         locationsource.clear();
-        var latitude = 31.33;
-        var longitude = 117.22;
-        /*var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;*/
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
         var iconFeature = new ol.Feature({
             geometry: new ol.geom.Point([longitude,latitude])
         });
