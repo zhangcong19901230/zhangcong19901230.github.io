@@ -1,6 +1,9 @@
 <!--********************************************************************
 * Copyright© 2000 - 2019 SuperMap Software Co.Ltd. All rights reserved.
 *********************************************************************-->
+<!--********************************************************************
+* Copyright© 2000 - 2019 SuperMap Software Co.Ltd. All rights reserved.
+*********************************************************************-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -171,11 +174,11 @@
         });
         iconFeature.setStyle(markstyle);
         locationsource.addFeature(iconFeature);
-        //map.setView( new ol.View({
-        //   center: [longitude,latitude],
-        //zoom: 18,
-        // projection: 'EPSG:4326'
-        //}));
+        map.setView( new ol.View({
+          center: [longitude,latitude],
+        zoom: 18,
+        projection: 'EPSG:4326'
+        }));
         curcoor = [];
         curcoor.push([longitude,latitude]);
     }
@@ -252,3 +255,4 @@
 </script>
 </body>
 </html>
+
