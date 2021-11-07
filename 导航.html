@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>导航</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+        .infoBox{
+            position: absolute;
+            left: 26%;
+            top: 2%;
+            color: #fffdfb;
+            background: rgba(2, 138, 255, 0.5);
+            display: flex;
+            height: 5%;
+            align-items: center;
+            width: 45%;
+            padding: 1%;
+            font-size: medium;
+        }
+        .infoBoxList{
+            position: absolute;
+            left: 22%;
+            bottom: 1%;
+            color: #0e0201;
+            background: rgba(91, 166, 255, 0.8);
+            height: 10%;
+            width: 48%;
+            padding: 1%;
+            overflow-y: scroll;
+            font-size: 5px;
+        }
+        .mapboxgl-ctrl-bottom-left{
+            display: none;
+        }
+    </style>
+    <script src="../../../js/jquery.min.js"></script>
+</head>
+<body>
+<div id='map'></div>
+<div class="infoBox" id="info">
+    <div>全程距离： </div>
+    <span style="color: #00FF00" id="lengthMum"></span>
+</div>
+<div class="infoBoxList">
+    <div style="color: #fffdfb;background: #1bff31;text-align: center;font-size: 16px">线路详情</div>
+</div>
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1Ijoiemhhbmdjb25nMTk5MDEyMzAiLCJhIjoiY2p5aWJ2a3RlMDh0YjNjangxYmI5cXViMSJ9.RkyTKOoRzQfoXAqs3GamLA';
+    var map = new mapboxgl.Map({
+        container: 'map',
+        //style: 'mapbox://styles/mapbox/satellite-v9',
+        style: 'mapbox://styles/mapbox/light-v10',
+        center: [117.2035, 31.842282757484384],
+        zoom: 20,
+        pitch: 90,
+    });
+
+    map.on('load', function () {
+        map.on('click', (e) => {
+            console.log(`A click event has occurred at ${e.lngLat}`);
+        });
+        map.addLayer({
+            'id': '3d-buildings',
+            'source': 'composite',
+            'source-layer': 'building',
+            'filter': ['==', 'extrude', 'true'],
+            'type': 'fill-extrusion',
+            'minzoom': 15,
+            'paint': {
+                'fill-extrusion-color': '#aaa',
+                'fill-extrusion-height': [
+                    "interpolate", ["linear"], ["zoom"],
+                    15, 0,
+                    15.05, ["get", "height"]
+                ],
+                'fill-extrusion-base': [
+                    "interpolate", ["linear"], ["zoom"],
+                    15, 0,
+                    15.05, ["get", "min_height"]
+                ],
+                'fill-extrusion-opacity': .6
+            }
+        });
+        ajax()
+        /*let path = geojson.features[0].geometry.coordinates
+        path.forEach(function (value, index, array) {
+            if(index<path.length-1){
+                var angle = GetLineAngle({X:value[0],Y:value[1]},{X:path[index+1][0],Y:path[index+1][1]})
+                console.log(angle)
+                if(index == 5){
+                    map.setCenter([value[0],value[1]]);
+                    map.setBearing(angle);
+                }
+            }
+        })*/
+    })
+
+    function addRoad(coordinates){
+        var geojson = {
+            "type": "FeatureCollection",
+            "features": [{
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "coordinates": coordinates,
+                    "type": "LineString"
+                }
+            }]
+        };
+        map.addSource('line', {
+            type: 'geojson',
+            lineMetrics: true,
+            data: geojson
+        });
+        map.addLayer({
+            type: 'line',
+            source: 'line',
+            id: 'line',
+            paint: {
+                'line-color': 'blue',
+                'line-width': 14
+            },
+            layout: {
+                'line-cap': 'round',
+                'line-join': 'round'
+            }
+        });
+    }
+
+    let path = []
+    function ajax() {
+        $.ajax({
+            url:'http://101.42.135.235:6080/arcgis/rest/services/networkmcroad/NAServer/%E8%B7%AF%E5%BE%84/solve?f=pjson&stops=117.1996,31.8422;117.2039,31.8413&returnDirections=true&directionsOutputType=esriDOTComplete&directionsLengthUnits=esriNAUKilometers',
+            async:true,
+            data:{},
+            success:function(data){
+                $('.infoBoxList').innerHTML = ''
+                JSON.parse(data).directions[0].features.forEach(function (val) {
+                    $('.infoBoxList').append("<div>"+val.attributes.text+"</div>")
+                })
+                document.getElementById("lengthMum").innerText = JSON.parse(data).routes.features[0].attributes.Total_长度.toFixed(0) + '米'
+                JSON.parse(data).routes.features[0].geometry.paths[0].forEach(function (val) {
+                    path.push([val[0],val[1]])
+                })
+                addRoad(path)
+                const markerStart = new mapboxgl.Marker()
+                    .setLngLat([path[0][0], path[0][1]])
+                    .addTo(map);
+                const markerEnd = new mapboxgl.Marker()
+                    .setLngLat([path[path.length-1][0], path[path.length-1][1]])
+                    .addTo(map);
+                /*let path = geojson.features[0].geometry.coordinates*/
+      /*          path.forEach(function (value, index, array) {
+                    if(index<path.length-1){
+                        var angle = GetLineAngle({X:value[0],Y:value[1]},{X:path[index+1][0],Y:path[index+1][1]})
+                        console.log(angle)
+                        if(index == 0){
+                            map.setCenter([value[0],value[1]]);
+                            map.setBearing(angle);
+                        }
+                    }
+                })*/
+            },
+            error:function (e) {
+                console.log("请求失败");
+            }
+        })
+    }
+
+    let curPosition = [[117.19965,31.84229],[117.2033,31.8421],[117.2033,31.8419],[117.2025,31.8420],[117.20399,31.84139]]
+    let indesxpo = 0
+    const interval = setInterval(function () {
+        //clearInterval(interval)
+        let index = minDistans()
+        if(index === path.length-1){
+            //map.setCenter([path[index][0],path[index][1]]);
+            map.setPitch(0, {duration: 2000});
+            map.panTo([path[index][0],path[index][1]], {duration: 5000});
+            clearInterval(interval)
+        }
+        var angle = GetLineAngle({X:path[index][0],Y:path[index][1]},{X:path[index+1][0],Y:path[index+1][1]})
+        if(angle ===0){
+            var angle = GetLineAngle({X:path[index+1][0],Y:path[index+1][1]},{X:path[index+2][0],Y:path[index+2][1]})
+            //map.setCenter([path[index+1][0],path[index+1][1]]);
+            map.panTo([path[index+1][0],path[index+1][1]], {duration: 3000});
+            map.setBearing(angle);
+        }
+        //map.panTo([path[index][0],path[index][1]], {duration: 2000});
+         map.setCenter([path[index][0],path[index][1]]);
+        map.setBearing(angle);
+        console.log(angle+"|||初始点位："+path[index][0]+"ll"+path[index][1])
+        indesxpo++;
+        if(indesxpo==4) indesxpo=0
+    },5000)
+
+
+
+    function minDistans() {
+        let curIndex
+        let distance
+        let flagDis = 1000000
+        path.forEach(function (value, index, array) {
+            distance = getDistance(value[0],value[1],curPosition[indesxpo][0],curPosition[indesxpo][1])
+            if(flagDis>distance){
+                flagDis = distance
+                curIndex = index
+            }
+        })
+        return curIndex
+    }
+
+    function  GetLineAngle(startPoint, endPoint)
+    {
+        var mathPI = 3.1415926535897931;
+        var tmpValue = 0;
+        var latStart = startPoint.Y * Math.PI/ 180;
+        var lngStart = startPoint.X * Math.PI / 180;
+        var latEnd = endPoint.Y * Math.PI / 180;
+        var lngEnd = endPoint.X * Math.PI / 180;
+        if (startPoint.X == endPoint.X || startPoint.Y == endPoint.Y)
+        {
+            if (startPoint.X == endPoint.X)
+            {
+                /// 经度相同
+                if (endPoint.Y >= startPoint.Y)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return 180;
+                }
+            }
+            else
+            {
+                /// 纬度相同
+                if (endPoint.X >= startPoint.X)
+                {
+                    return 90;
+                }
+                else
+                {
+                    return 270;
+                }
+            }
+        }
+
+        tmpValue = Math.sin(latStart) * Math.sin(latEnd) + Math.cos(latStart) * Math.cos(latEnd) * Math.cos(lngEnd - lngStart);
+        tmpValue = Math.sqrt(1 - tmpValue * tmpValue);
+        tmpValue = Math.cos(latEnd) * Math.sin(lngEnd - lngStart) / tmpValue;
+        var resultAngle = Math.abs(Math.asin(tmpValue) * 180 / Math.PI);
+
+        if (endPoint.X > startPoint.X)
+        {
+            if (endPoint.Y >= startPoint.Y)
+            {
+                /// 第一象限
+                return resultAngle;
+            }
+            else
+            {
+                /// 第二象限
+                return 180 - resultAngle;
+            }
+        }
+        else
+        {
+            /// 第四象限
+            if (endPoint.Y >= startPoint.Y)
+            {
+                return 360 - resultAngle;
+            }
+            else
+            {
+                /// 第三象限
+                return 180 + resultAngle;
+            }
+        }
+    }
+
+    function rad(d) {
+        return d * Math.PI / 180.0;
+    }
+    function getDistance(lat1, lng1, lat2, lng2) {
+        var radLat1 = rad(lat1);
+        var radLat2 = rad(lat2);
+        var a = radLat1 - radLat2;
+        var b = rad(lng1) - rad(lng2);
+        var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
+            Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+        s = s * 6378.137; // EARTH_RADIUS;
+        s = Math.round(s * 10000) / 10000; //输出为公里
+
+        var distance = s;
+        var distance_str = "";
+
+        if (parseInt(distance) >= 1) {
+            distance_str = distance.toFixed(1) + "km";
+        } else {
+            distance_str = distance * 1000 + "m";
+        }
+/*
+        //s=s.toFixed(4);
+        console.info('lyj 距离是', s);
+        console.info('lyj 距离是', distance_str);*/
+        return s;
+    }
+
+</script>
+
+</body>
+</html>
