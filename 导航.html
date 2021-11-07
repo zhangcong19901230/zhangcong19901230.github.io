@@ -38,7 +38,7 @@
             display: none;
         }
     </style>
-    <script src="../../../js/jquery.min.js"></script>
+    <script src="jquery.min.js"></script>
 </head>
 <body>
 <div id='map'></div>
@@ -87,18 +87,37 @@
             }
         });
         ajax()
-        /*let path = geojson.features[0].geometry.coordinates
-        path.forEach(function (value, index, array) {
-            if(index<path.length-1){
-                var angle = GetLineAngle({X:value[0],Y:value[1]},{X:path[index+1][0],Y:path[index+1][1]})
-                console.log(angle)
-                if(index == 5){
-                    map.setCenter([value[0],value[1]]);
-                    map.setBearing(angle);
-                }
-            }
-        })*/
     })
+
+    let path = []
+    function ajax() {
+        $.ajax({
+            url:'http://101.42.135.235:6080/arcgis/rest/services/networkmcroad/NAServer/%E8%B7%AF%E5%BE%84/solve?f=pjson&stops=117.1996,31.8422;117.2039,31.8413&returnDirections=true&directionsOutputType=esriDOTComplete&directionsLengthUnits=esriNAUKilometers',
+            async:true,
+            data:{},
+            success:function(data){
+                $('.infoBoxList').innerHTML = ''
+                JSON.parse(data).directions[0].features.forEach(function (val) {
+                    $('.infoBoxList').append("<div>"+val.attributes.text+"</div>")
+                })
+                document.getElementById("lengthMum").innerText = JSON.parse(data).routes.features[0].attributes.Total_长度.toFixed(0) + '米'
+                JSON.parse(data).routes.features[0].geometry.paths[0].forEach(function (val) {
+                    path.push([val[0],val[1]])
+                })
+                addRoad(path)
+                const markerStart = new mapboxgl.Marker()
+                    .setLngLat([path[0][0], path[0][1]])
+                    .addTo(map);
+                const markerEnd = new mapboxgl.Marker()
+                    .setLngLat([path[path.length-1][0], path[path.length-1][1]])
+                    .addTo(map);
+                getPosition()
+            },
+            error:function (e) {
+                alert("请求失败");
+            }
+        })
+    }
 
     function addRoad(coordinates){
         var geojson = {
@@ -132,57 +151,23 @@
         });
     }
 
-    let path = []
-    function ajax() {
-        $.ajax({
-            url:'http://101.42.135.235:6080/arcgis/rest/services/networkmcroad/NAServer/%E8%B7%AF%E5%BE%84/solve?f=pjson&stops=117.1996,31.8422;117.2039,31.8413&returnDirections=true&directionsOutputType=esriDOTComplete&directionsLengthUnits=esriNAUKilometers',
-            async:true,
-            data:{},
-            success:function(data){
-                $('.infoBoxList').innerHTML = ''
-                JSON.parse(data).directions[0].features.forEach(function (val) {
-                    $('.infoBoxList').append("<div>"+val.attributes.text+"</div>")
-                })
-                document.getElementById("lengthMum").innerText = JSON.parse(data).routes.features[0].attributes.Total_长度.toFixed(0) + '米'
-                JSON.parse(data).routes.features[0].geometry.paths[0].forEach(function (val) {
-                    path.push([val[0],val[1]])
-                })
-                addRoad(path)
-                const markerStart = new mapboxgl.Marker()
-                    .setLngLat([path[0][0], path[0][1]])
-                    .addTo(map);
-                const markerEnd = new mapboxgl.Marker()
-                    .setLngLat([path[path.length-1][0], path[path.length-1][1]])
-                    .addTo(map);
-                /*let path = geojson.features[0].geometry.coordinates*/
-      /*          path.forEach(function (value, index, array) {
-                    if(index<path.length-1){
-                        var angle = GetLineAngle({X:value[0],Y:value[1]},{X:path[index+1][0],Y:path[index+1][1]})
-                        console.log(angle)
-                        if(index == 0){
-                            map.setCenter([value[0],value[1]]);
-                            map.setBearing(angle);
-                        }
-                    }
-                })*/
-            },
-            error:function (e) {
-                console.log("请求失败");
-            }
-        })
+    function getPosition(){
+        if(window.navigator.geolocation){
+            navigator.geolocation.watchPosition(showPosition,errobak,{provider:'system',coordsType: 'wgs84',enableHighAccuracy:true,timeout:5000,maximumAge:20000});
+        }else{
+            alert("你的浏览器不能使用HTML5定位")
+        }
     }
 
-    let curPosition = [[117.19965,31.84229],[117.2033,31.8421],[117.2033,31.8419],[117.2025,31.8420],[117.20399,31.84139]]
-    let indesxpo = 0
-    const interval = setInterval(function () {
-        //clearInterval(interval)
-        let index = minDistans()
-        if(index === path.length-1){
-            //map.setCenter([path[index][0],path[index][1]]);
-            map.setPitch(0, {duration: 2000});
-            map.panTo([path[index][0],path[index][1]], {duration: 5000});
-            clearInterval(interval)
-        }
+    function errobak() {
+        alert("GPS网络差");
+    }
+    function showPosition(position)
+    {
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+        alert(longitude+":"+latitude)
+        let index = minDistans(longitude,latitude)
         var angle = GetLineAngle({X:path[index][0],Y:path[index][1]},{X:path[index+1][0],Y:path[index+1][1]})
         if(angle ===0){
             var angle = GetLineAngle({X:path[index+1][0],Y:path[index+1][1]},{X:path[index+2][0],Y:path[index+2][1]})
@@ -191,21 +176,24 @@
             map.setBearing(angle);
         }
         //map.panTo([path[index][0],path[index][1]], {duration: 2000});
-         map.setCenter([path[index][0],path[index][1]]);
+        map.setCenter([path[index][0],path[index][1]]);
         map.setBearing(angle);
-        console.log(angle+"|||初始点位："+path[index][0]+"ll"+path[index][1])
-        indesxpo++;
-        if(indesxpo==4) indesxpo=0
-    },5000)
+        let curStart
+        if(curStart){
+            curStart.remove();
+        }
+        curStart = new mapboxgl.Marker()
+            .setLngLat([longitude,latitude])
+            .addTo(map);
 
+    }
 
-
-    function minDistans() {
+    function minDistans(longitude,latitude) {
         let curIndex
         let distance
         let flagDis = 1000000
         path.forEach(function (value, index, array) {
-            distance = getDistance(value[0],value[1],curPosition[indesxpo][0],curPosition[indesxpo][1])
+            distance = getDistance(value[0],value[1],longitude,latitude)
             if(flagDis>distance){
                 flagDis = distance
                 curIndex = index
