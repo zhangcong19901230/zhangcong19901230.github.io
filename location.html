@@ -112,6 +112,9 @@
                     .setLngLat([path[path.length-1][0], path[path.length-1][1]])
                     .addTo(map);
                 getPosition()
+                window.addEventListener('deviceorientation', function(e){
+                    alert('alpha: ' + e.alpha)
+                }, false);
             },
             error:function (e) {
                 alert("请求失败");
@@ -292,10 +295,10 @@
         } else {
             distance_str = distance * 1000 + "m";
         }
-/*
-        //s=s.toFixed(4);
-        console.info('lyj 距离是', s);
-        console.info('lyj 距离是', distance_str);*/
+        /*
+                //s=s.toFixed(4);
+                console.info('lyj 距离是', s);
+                console.info('lyj 距离是', distance_str);*/
         return s;
     }
 
