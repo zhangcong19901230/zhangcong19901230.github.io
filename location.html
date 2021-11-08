@@ -65,6 +65,19 @@
             console.log(`A click event has occurred at ${e.lngLat}`);
         });
         map.addLayer({
+            'id': 'ArcGIS_WMTS',
+            'type': 'raster',//这里要用raster ，因为切片得到的是图片
+            'source': {
+                'type': 'raster',//切片地图使用png 所以这里设置为raster
+                //'tiles': ['http://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/WMTS/tile/1.0.0/World_Imagery/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg'],
+                'tiles': ['http://101.42.135.235:6080/arcgis/rest/services/mcimg/MapServer/WMTS/tile/1.0.0/mcimg/default/default028mm/{z}/{y}/{x}.png'],
+
+
+                'tileSize': 256,
+                "bounds": [-180, -90, 180, 90]
+            },
+        });
+        map.addLayer({
             'id': '3d-buildings',
             'source': 'composite',
             'source-layer': 'building',
