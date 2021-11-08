@@ -53,8 +53,26 @@
     mapboxgl.accessToken = 'pk.eyJ1Ijoiemhhbmdjb25nMTk5MDEyMzAiLCJhIjoiY2p5aWJ2a3RlMDh0YjNjangxYmI5cXViMSJ9.RkyTKOoRzQfoXAqs3GamLA';
     var map = new mapboxgl.Map({
         container: 'map',
-        //style: 'mapbox://styles/mapbox/satellite-v9',
-        style: 'mapbox://styles/mapbox/light-v10',
+        //style: 'mapbox://styles/mapbox/dark-v10',
+        style: {
+            "version": 8,
+            "name": "Mapbox Streets",
+            "sources": {
+                "osm-tiles": {
+                    'type': 'raster',//切片地图使用png 所以这里设置为raster
+                    //'tiles': ['http://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/WMTS/tile/1.0.0/World_Imagery/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg'],
+                    'tiles': ['http://101.42.135.235:6080/arcgis/rest/services/mcimg/MapServer/WMTS/tile/1.0.0/mcimg/default/default028mm/{z}/{y}/{x}.png'],
+                    'tileSize': 256,
+                    "bounds": [-180, -90, 180, 90]
+                }
+            },
+            "layers":[{
+                "id": "123",
+                "type": "raster",
+                "source": "osm-tiles",
+                "source-layer": "osmtiles"
+            }]
+        },
         center: [117.2035, 31.842282757484384],
         zoom: 20,
         pitch: 10,
@@ -64,45 +82,11 @@
         map.on('click', (e) => {
             console.log(`A click event has occurred at ${e.lngLat}`);
         });
-        map.addLayer({
-            'id': 'ArcGIS_WMTS',
-            'type': 'raster',//这里要用raster ，因为切片得到的是图片
-            'source': {
-                'type': 'raster',//切片地图使用png 所以这里设置为raster
-                //'tiles': ['http://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/WMTS/tile/1.0.0/World_Imagery/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg'],
-                'tiles': ['http://101.42.135.235:6080/arcgis/rest/services/mcimg/MapServer/WMTS/tile/1.0.0/mcimg/default/default028mm/{z}/{y}/{x}.png'],
-
-
-                'tileSize': 256,
-                "bounds": [-180, -90, 180, 90]
-            },
-        });
-        map.addLayer({
-            'id': '3d-buildings',
-            'source': 'composite',
-            'source-layer': 'building',
-            'filter': ['==', 'extrude', 'true'],
-            'type': 'fill-extrusion',
-            'minzoom': 15,
-            'paint': {
-                'fill-extrusion-color': '#aaa',
-                'fill-extrusion-height': [
-                    "interpolate", ["linear"], ["zoom"],
-                    15, 0,
-                    15.05, ["get", "height"]
-                ],
-                'fill-extrusion-base': [
-                    "interpolate", ["linear"], ["zoom"],
-                    15, 0,
-                    15.05, ["get", "min_height"]
-                ],
-                'fill-extrusion-opacity': .6
-            }
-        });
         ajax()
     })
 
     let path = []
+    let curBear = 0;
     function ajax() {
         $.ajax({
             url:'http://101.42.135.235:6080/arcgis/rest/services/networkmcroad/NAServer/%E8%B7%AF%E5%BE%84/solve?f=pjson&stops=117.1996,31.8422;117.2039,31.8413&returnDirections=true&directionsOutputType=esriDOTComplete&directionsLengthUnits=esriNAUKilometers',
@@ -125,9 +109,13 @@
                     .setLngLat([path[path.length-1][0], path[path.length-1][1]])
                     .addTo(map);
                 getPosition()
-           /*     window.addEventListener('deviceorientation', function(e){
-                    alert('alpha: ' + e.alpha)
-                }, false);*/
+                window.addEventListener('deviceorientation', function(e){
+                    curBear=e.alpha
+                    if(map.hasImage('position')){
+                        map.setLayoutProperty('points', 'icon-rotate', curBear);
+                    }
+                }, false);
+
             },
             error:function (e) {
                 alert("请求失败");
@@ -174,7 +162,6 @@
             alert("你的浏览器不能使用HTML5定位")
         }
     }
-    //getPosition()
 
     function errobak() {
         alert("GPS网络差");
@@ -194,14 +181,53 @@
         //map.panTo([path[index][0],path[index][1]], {duration: 2000});
         map.setCenter([path[index][0],path[index][1]]);
         map.setBearing(angle);
-        let curStart
-        if(curStart){
-            curStart.remove();
-        }
-        curStart = new mapboxgl.Marker()
-            .setLngLat([longitude,latitude])
-            .addTo(map);
+        setPosition(longitude,latitude)
+    }
 
+    function setPosition(longitude,latitude){
+        let positionSource = map.getSource('positionSource')
+        if(positionSource){
+            positionSource.setData({
+                "type": "FeatureCollection",
+                "features": [{
+                    "type": "Feature",
+                    "properties": {"name": "Null Island"},
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [ longitude, latitude ]
+                    }
+                }]
+            });
+            return
+        }
+        map.loadImage('data/curposition.png', function(error, image) {
+            if (error) throw error;
+            map.addImage('position', image);
+            map.addSource('positionSource',{
+                "type": "geojson",
+                "data": {
+                    "type": "FeatureCollection",
+                    "features": [{
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [117.2035, 31.8422827574]
+                        }
+                    }]
+                }
+
+            })
+            map.addLayer({
+                "id": "points",
+                "type": "symbol",
+                "source":'positionSource',
+                "layout": {
+                    "icon-image": "position",
+                    "icon-size": 1.2,
+                    "icon-rotate":0
+                }
+            });
+        })
     }
 
     function minDistans(longitude,latitude) {
