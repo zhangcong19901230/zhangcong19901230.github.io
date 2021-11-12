@@ -61,8 +61,8 @@
 <div style="position: absolute;bottom:17%;right: -2%" onclick="goPosition()">
     <img  height="60" width="60" src="goposition.png">
 </div>
-<div class="infoBoxList">
-    <div style="color: #fffdfb;background: #1bff31;text-align: center;font-size: 16px">线路详情</div>
+<div class="infoBoxList" id="infoBoxList">
+    <div style="color: #fffdfb;background: rgba(27,255,49,0.46);text-align: center;font-size: 16px">线路详情</div>
 </div>
 <script>
     mapboxgl.accessToken = 'pk.eyJ1Ijoiemhhbmdjb25nMTk5MDEyMzAiLCJhIjoiY2p5aWJ2a3RlMDh0YjNjangxYmI5cXViMSJ9.RkyTKOoRzQfoXAqs3GamLA';
@@ -133,7 +133,7 @@
             data:{},
             success:function(data){
                 path = []
-                $('.infoBoxList').innerHTML = ''
+                document.getElementById('infoBoxList').innerHTML = '';
                 JSON.parse(data).directions[0].features.forEach(function (val) {
                     $('.infoBoxList').append("<div>"+val.attributes.text+"</div>")
                 })
@@ -214,6 +214,8 @@
             map.removeSource('startSource')
             map.removeLayer('endLayerId')
             map.removeSource('endSource')
+            map.removeImage('start')
+            map.removeImage('end')
         }
         map.loadImage('start.png', function(error, image) {
             if (error) throw error;
