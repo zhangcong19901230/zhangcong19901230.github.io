@@ -314,7 +314,7 @@
         if(window.navigator.geolocation){
             navigator.geolocation.watchPosition(showPosition,errobak,{provider:'system',coordsType: 'wgs84',enableHighAccuracy:true,timeout:5000,maximumAge:20000});
         }else{
-            alert("定位不持持")
+            alert("定位不支持")
         }
     }
     function errobak() {
