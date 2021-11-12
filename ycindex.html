@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>导航</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+        .infoBox{
+            position: absolute;
+            left: 5%;
+            top: 2%;
+            color: #fffdfb;
+            background: rgba(2, 138, 255, 0.5);
+            display: flex;
+            height: 9%;
+            flex-direction: column;
+            width: 88%;
+            padding: 1%;
+            font-size: medium;
+        }
+        .infoBoxList{
+            position: absolute;
+            left: 22%;
+            bottom: 1%;
+            color: #0e0201;
+            background: rgba(91, 166, 255, 0.8);
+            height: 10%;
+            width: 48%;
+            padding: 1%;
+            overflow-y: scroll;
+            font-size: 5px;
+        }
+        .mapboxgl-ctrl-bottom-left{
+            display: none;
+        }
+    </style>
+    <script src="jquery.min.js"></script>
+</head>
+<body>
+<div id='map'></div>
+<div class="infoBox">
+    <div>
+        <span>起点： </span>
+        <input id="startPoint" placeholder="默认起点大门口"></input>
+    </div>
+    <div>
+        <span>终点： </span>
+        <input id="endPoint" placeholder="请点击选择终点"></input>
+        <button style="background: #28ec10a6;
+    top: 23%;
+    position: absolute;
+    right: 3%;
+    width: 21%;
+    height: 52%;" onclick="goTo()">导航</button>
+    </div>
+</div>
+<div style="position: absolute;bottom:17%;right: -2%" onclick="goPosition()">
+    <img  height="60" width="60" src="goposition.png">
+</div>
+<div class="infoBoxList">
+    <div style="color: #fffdfb;background: #1bff31;text-align: center;font-size: 16px">线路详情</div>
+</div>
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1Ijoiemhhbmdjb25nMTk5MDEyMzAiLCJhIjoiY2p5aWJ2a3RlMDh0YjNjangxYmI5cXViMSJ9.RkyTKOoRzQfoXAqs3GamLA';
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: {
+            "version": 8,
+            "name": "Mapbox Streets",
+            "sources": {
+                "osm-tiles": {
+                    'type': 'raster',
+                    'tiles': ['http://101.42.135.235:6080/arcgis/rest/services/ycimg/MapServer/WMTS/tile/1.0.0/ycimg/default/default028mm/{z}/{y}/{x}.png'],
+                    'tileSize': 256,
+                    "bounds": [-180, -90, 180, 90]
+                }
+            },
+            "layers":[{
+                "id": "123",
+                "type": "raster",
+                "source": "osm-tiles",
+                "source-layer": "osmtiles"
+            }]
+        },
+        center: [111.0393, 34.9739],
+        zoom: 16,
+        pitch: 10,
+    });
+
+    function goTo(){
+        ajax()
+    }
+    function goPosition(){
+        getPosition()
+    }
+
+    map.on('load', function () {
+        map.on('click', (e) => {
+            let existLayersIds = []
+            console.log(` ${e.lngLat}`);
+            const bbox = [
+                [e.point.x - 5, e.point.y - 5],
+                [e.point.x + 5, e.point.y + 5]
+            ];
+            const existLayers = map.getStyle().layers;
+            existLayers.forEach(existLayer => {
+                const existLayerId = existLayer.id;
+                if (existLayerId.includes('poilayerId')) {
+                    existLayersIds.push(existLayer.id);
+                }
+            });
+            let renderFeatures = map.queryRenderedFeatures(bbox, { layers: existLayersIds });
+            renderFeatures.forEach(renderFeature => {
+                let name = renderFeature.properties.title
+                endCoor = renderFeature.geometry.coordinates
+                $("#endPoint").val(name)
+            })
+        });
+        addMarker()
+    })
+    let startCoor = [111.0396376,34.974719]
+    let endCoor = []
+    let path = []
+    let curBear = 0;
+    function ajax() {
+        $.ajax({
+            url:'http://101.42.135.235:6080/arcgis/rest/services/ycnet/NAServer/%E8%B7%AF%E5%BE%84/solve?f=pjson&stops='+startCoor[0]+','+startCoor[1]+';'+endCoor[0]+','+endCoor[1]+'&returnDirections=true&directionsOutputType=esriDOTComplete&directionsLengthUnits=esriNAUKilometers',
+            async:true,
+            data:{},
+            success:function(data){
+                path = []
+                $('.infoBoxList').innerHTML = ''
+                JSON.parse(data).directions[0].features.forEach(function (val) {
+                    $('.infoBoxList').append("<div>"+val.attributes.text+"</div>")
+                })
+                JSON.parse(data).routes.features[0].geometry.paths[0].forEach(function (val) {
+                    path.push([val[0],val[1]])
+                })
+                addRoad(path)
+                window.addEventListener('deviceorientation', function(e){
+                    curBear=e.alpha
+                    if(map.hasImage('position')){
+                        map.setLayoutProperty('points', 'icon-rotate', curBear);
+                    }
+                }, false);
+            },
+            error:function (e) {
+                alert("请求失败");
+            }
+        })
+    }
+
+    function addMarker() {
+        map.loadImage('poi.png', function(error, image) {
+            if (error) throw error;
+            map.addImage('poi', image);
+            map.addSource('poiSource',{
+                "type": "geojson",
+                "data": {
+                    "type": "FeatureCollection",
+                    "features": [
+                       {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [111.03929, 34.97393]
+                        },
+                       'properties': {
+                           'title': '办公楼'
+                       }
+                       },
+                        {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [111.0424946, 34.97429]
+                            },
+                            'properties': {
+                                'title': '考场'
+                            }
+                        },
+                        {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [111.03941520367482, 34.97513930506642]
+                            },
+                            'properties': {
+                                'title': '入口'
+                            }
+                        },
+                    ]
+                }
+            })
+            map.addLayer({
+                "id": "poilayerId",
+                "type": "symbol",
+                "source":'poiSource',
+                "layout": {
+                    "icon-image": "poi",
+                    "icon-size": 0.8,
+                    "icon-rotate":0
+                }
+            });
+        })
+    }
+    function addRoad(coordinates){
+        if(map.getSource('startSource')){
+            map.removeLayer('startLayerId')
+            map.removeSource('startSource')
+            map.removeLayer('endLayerId')
+            map.removeSource('endSource')
+        }
+        map.loadImage('start.png', function(error, image) {
+            if (error) throw error;
+            map.addImage('start', image);
+            map.addSource('startSource',{
+                "type": "geojson",
+                "data": {
+                    "type": "FeatureCollection",
+                    "features": [
+                        {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates":[path[0][0], path[0][1]]
+                            }
+                        }
+                    ]
+                }
+            })
+            map.addLayer({
+                "id": "startLayerId",
+                "type": "symbol",
+                "source":'startSource',
+                "layout": {
+                    "icon-image": "start",
+                    "icon-size": 0.7,
+                    "icon-rotate":0
+                }
+            });
+        })
+        map.loadImage('end.png', function(error, image) {
+            if (error) throw error;
+            map.addImage('end', image);
+            map.addSource('endSource',{
+                "type": "geojson",
+                "data": {
+                    "type": "FeatureCollection",
+                    "features": [
+                        {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [path[path.length-1][0], path[path.length-1][1]]
+                            }
+                        }
+                    ]
+                }
+            })
+            map.addLayer({
+                "id": "endLayerId",
+                "type": "symbol",
+                "source":'endSource',
+                "layout": {
+                    "icon-image": "end",
+                    "icon-size": 0.7,
+                    "icon-rotate":0
+                }
+            });
+        })
+        if(map.getSource('lineSource')){
+            map.removeLayer('line')
+            map.removeSource('lineSource')
+        }
+        var geojson = {
+            "type": "FeatureCollection",
+            "features": [{
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "coordinates": coordinates,
+                    "type": "LineString"
+                }
+            }]
+        };
+        map.addSource('lineSource', {
+            type: 'geojson',
+            lineMetrics: true,
+            data: geojson
+        });
+        map.addLayer({
+            type: 'line',
+            source: 'lineSource',
+            id: 'line',
+            paint: {
+                'line-color': 'blue',
+                'line-width': 14
+            },
+            layout: {
+                'line-cap': 'round',
+                'line-join': 'round'
+            }
+        });
+    }
+
+    function getPosition(){
+        if(window.navigator.geolocation){
+            navigator.geolocation.watchPosition(showPosition,errobak,{provider:'system',coordsType: 'wgs84',enableHighAccuracy:true,timeout:5000,maximumAge:20000});
+        }else{
+            alert("定位不持持")
+        }
+    }
+    function errobak() {
+        alert("GPS信号差");
+    }
+    function showPosition(position)
+    {
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+        setPosition(longitude,latitude)
+        startCoor = [longitude,latitude]
+    }
+    function setPosition(longitude,latitude){
+        let positionSource = map.getSource('positionSource')
+        if(positionSource){
+            positionSource.setData({
+                "type": "FeatureCollection",
+                "features": [{
+                    "type": "Feature",
+                    "properties": {"name": "Null Island"},
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [ longitude, latitude ]
+                    }
+                }]
+            });
+            return
+        }
+        map.loadImage('curposition.png', function(error, image) {
+            if (error) throw error;
+            map.addImage('position', image);
+            map.addSource('positionSource',{
+                "type": "geojson",
+                "data": {
+                    "type": "FeatureCollection",
+                    "features": [{
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [117.2035, 31.8422827574]
+                        }
+                    }]
+                }
+
+            })
+            map.addLayer({
+                "id": "points",
+                "type": "symbol",
+                "source":'positionSource',
+                "layout": {
+                    "icon-image": "position",
+                    "icon-size": 1.2,
+                    "icon-rotate":0
+                }
+            });
+        })
+    }
+</script>
+
+</body>
+</html>
