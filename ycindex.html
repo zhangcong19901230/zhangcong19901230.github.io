@@ -37,6 +37,9 @@
         .mapboxgl-ctrl-bottom-left{
             display: none;
         }
+        .mapboxgl-canvas{
+            background: rgb(1 255 114 / 19%);
+        }
     </style>
     <script src="jquery.min.js"></script>
 </head>
@@ -74,7 +77,7 @@
             "sources": {
                 "osm-tiles": {
                     'type': 'raster',
-                    'tiles': ['http://101.42.135.235:6080/arcgis/rest/services/ycimg/MapServer/WMTS/tile/1.0.0/ycimg/default/default028mm/{z}/{y}/{x}.png'],
+                    'tiles': ['http://101.42.135.235:6080/arcgis/rest/services/YCIMGNEW/MapServer/WMTS/tile/1.0.0/YCIMGNEW/default/default028mm/{z}/{y}/{x}.png'],
                     'tileSize': 256,
                     "bounds": [-180, -90, 180, 90]
                 }
@@ -89,6 +92,7 @@
         center: [111.0393, 34.9739],
         zoom: 16,
         pitch: 10,
+        bearing: 160
     });
 
     function goTo(){
