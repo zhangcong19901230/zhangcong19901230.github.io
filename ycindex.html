@@ -149,7 +149,7 @@
                 window.addEventListener('deviceorientation', function(e){
                     curBear=e.alpha
                     if(map.hasImage('position')){
-                        map.setLayoutProperty('points', 'icon-rotate', curBear);
+                        map.setLayoutProperty('points', 'icon-rotate', curBear + 160);
                     }
                 }, false);
             },
@@ -333,7 +333,8 @@
         startCoor = [longitude,latitude]
     }
     function setPosition(longitude,latitude){
-        map.setCenter([longitude, latitude]);
+        alert("经度："+longitude + "||纬度："+latitude)
+        //map.setCenter([longitude, latitude]);
         let positionSource = map.getSource('positionSource')
         if(positionSource){
             positionSource.setData({
