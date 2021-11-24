@@ -333,6 +333,7 @@
         startCoor = [longitude,latitude]
     }
     function setPosition(longitude,latitude){
+        map.setCenter([longitude, latitude]);
         let positionSource = map.getSource('positionSource')
         if(positionSource){
             positionSource.setData({
