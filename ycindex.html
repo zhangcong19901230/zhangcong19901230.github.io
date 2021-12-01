@@ -127,13 +127,14 @@
         });
         addMarker()
     })
-    let startCoor = [111.0396376,34.974719]
+    let curTimePosition = []
+    let startCoor = [111.03943,34.975025]
     let endCoor = []
     let path = []
     let curBear = 0;
     function ajax() {
         $.ajax({
-            url:'http://101.42.135.235:6080/arcgis/rest/services/ycnet/NAServer/%E8%B7%AF%E5%BE%84/solve?f=pjson&stops='+startCoor[0]+','+startCoor[1]+';'+endCoor[0]+','+endCoor[1]+'&returnDirections=true&directionsOutputType=esriDOTComplete&directionsLengthUnits=esriNAUKilometers',
+            url:'http://101.42.135.235:6080/arcgis/rest/services/roadnet/NAServer/%E8%B7%AF%E5%BE%84/solve?f=pjson&stops='+startCoor[0]+','+startCoor[1]+';'+endCoor[0]+','+endCoor[1]+'&returnDirections=true&directionsOutputType=esriDOTComplete&directionsLengthUnits=esriNAUKilometers',
             async:true,
             data:{},
             success:function(data){
@@ -172,32 +173,82 @@
                         "type": "Feature",
                         "geometry": {
                             "type": "Point",
-                            "coordinates": [111.03929, 34.97393]
+                            "coordinates": [111.0396267, 34.974615]
                         },
                        'properties': {
-                           'title': '办公楼'
+                           'title': '电动门'
                        }
                        },
                         {
                             "type": "Feature",
                             "geometry": {
                                 "type": "Point",
-                                "coordinates": [111.0424946, 34.97429]
+                                "coordinates": [111.0392225, 34.9740575]
                             },
                             'properties': {
-                                'title': '考场'
+                                'title': '综合楼'
                             }
                         },
                         {
                             "type": "Feature",
                             "geometry": {
                                 "type": "Point",
-                                "coordinates": [111.03941520367482, 34.97513930506642]
+                                "coordinates": [111.0408567, 34.97405333]
                             },
                             'properties': {
-                                'title': '入口'
+                                'title': '小车1号二级待考室'
                             }
                         },
+                        {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [111.0415233, 34.97427]
+                            },
+                            'properties': {
+                                'title': '小车2号二级待考室'
+                            }
+                        },
+                        {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [111.0422, 34.974516]
+                            },
+                            'properties': {
+                                'title': '小车3号二级待考室'
+                            }
+                        },
+                        {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [111.0428717, 34.97477167]
+                            },
+                            'properties': {
+                                'title': '小车4号二级待考室'
+                            }
+                        },
+                        {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [111.0396183, 34.97360167]
+                            },
+                            'properties': {
+                                'title': '大车二级待考室'
+                            }
+                        },
+                        {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [111.03943, 34.975025]
+                            },
+                            'properties': {
+                                'title': '大门口'
+                            }
+                        }
                     ]
                 }
             })
@@ -327,14 +378,15 @@
     }
     function showPosition(position)
     {
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
+        var latitude = position.coords.latitude + 3.0049250000000036;
+        var longitude = position.coords.longitude - 6.22487000000001;
         setPosition(longitude,latitude)
         startCoor = [longitude,latitude]
+        curTimePosition = [longitude,latitude]
     }
     function setPosition(longitude,latitude){
-        alert("经度："+longitude + "||纬度："+latitude)
-        //map.setCenter([longitude, latitude]);
+        //alert("经度："+longitude + "||纬度："+latitude)
+        map.setCenter([longitude, latitude]);
         let positionSource = map.getSource('positionSource')
         if(positionSource){
             positionSource.setData({
@@ -379,6 +431,66 @@
             });
         })
     }
+
+
+    function addOutRoad(coordinates){
+        if(map.getSource('outLineSource')){
+            map.removeLayer('outLine')
+            map.removeSource('outLineSource')
+        }
+        var geojson = {
+            "type": "FeatureCollection",
+            "features": [{
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "coordinates": coordinates,
+                    "type": "LineString"
+                }
+            }]
+        };
+        map.addSource('outLineSource', {
+            type: 'geojson',
+            lineMetrics: true,
+            data: geojson
+        });
+        map.addLayer({
+            type: 'line',
+            source: 'outLineSource',
+            id: 'outLine',
+            paint: {
+                'line-color': '#17ff71',
+                'line-width': 8
+            },
+            layout: {
+                'line-cap': 'round',
+                'line-join': 'round'
+            }
+        });
+    }
+    var outPath = []
+    function addOutRoad() {
+        $.ajax({
+            url:'http://101.42.135.235:6080/arcgis/rest/services/roadnet/NAServer/%E8%B7%AF%E5%BE%84/solve?f=pjson&stops='+path[0][0]+','+path[0][1]+';'+curTimePosition[0]+','+curTimePosition[1]+'&returnDirections=true&directionsOutputType=esriDOTComplete&directionsLengthUnits=esriNAUKilometers',
+            async:true,
+            data:{},
+            success:function(data){
+                outPath = []
+                JSON.parse(data).routes.features[0].geometry.paths[0].forEach(function (val) {
+                    outPath.push([val[0],val[1]])
+                })
+                addOutRoad(outPath)
+            },
+            error:function (e) {
+                alert("请求失败");
+            }
+        })
+    }
+    setInterval(function () {
+        if(path.length>0 && curTimePosition.length>0){
+            addOutRoad()
+        }
+    },3000)
 </script>
 
 </body>
