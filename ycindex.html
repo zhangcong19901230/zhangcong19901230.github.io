@@ -379,10 +379,10 @@
     function errobak() {
         alert("GPS信号差");
     }
-    function showPosition(position)
+    function showPosition(position)//偏移修改
     {
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
+        var latitude = position.coords.latitude + 3.0049250000000036;
+        var longitude = position.coords.longitude - 6.22487000000001;
         setPosition(longitude,latitude)
         startCoor = [longitude,latitude]
         curTimePosition = [longitude,latitude]
@@ -491,12 +491,12 @@
         })
     }
     setInterval(function () {
-        //curTimePosition  =  [111.0392225, 34.9740575]
+        //偏移修改
+        curTimePosition  =  [111.0392225, 34.9740575]
         if(path.length>0 && curTimePosition.length>0){
             addOutRoadAjax()
         }
     },3000)
-
 
     function goTo(){
         ajax()
