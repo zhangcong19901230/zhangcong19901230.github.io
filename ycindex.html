@@ -4,8 +4,8 @@
     <meta charset='utf-8' />
     <title>导航</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css' rel='stylesheet' />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
     <style>
         body { margin:0; padding:0; }
         #map { position:absolute; top:0; bottom:0; width:100%; }
@@ -257,8 +257,15 @@
                 "type": "symbol",
                 "source":'poiSource',
                 "layout": {
+                   /* 'text-field': ['title'],
+                    'text-font': [
+                        'Open Sans Semibold',
+                        'Arial Unicode MS Bold'
+                    ],
+                    'text-offset': [0, 1.25],
+                    'text-anchor': 'top',*/
                     "icon-image": "poi",
-                    "icon-size": 0.8,
+                    "icon-size": 0.6,
                     "icon-rotate":0
                 }
             });
@@ -297,7 +304,7 @@
                 "source":'startSource',
                 "layout": {
                     "icon-image": "start",
-                    "icon-size": 0.55,
+                    "icon-size": 0.65,
                     "icon-rotate":0
                 }
             });
@@ -326,7 +333,7 @@
                 "source":'endSource',
                 "layout": {
                     "icon-image": "end",
-                    "icon-size": 0.55,
+                    "icon-size": 0.65,
                     "icon-rotate":0
                 }
             });
@@ -459,7 +466,7 @@
             source: 'outLineSource',
             id: 'outLine',
             paint: {
-                'line-color': '#17ff71',
+                'line-color': '#254007',
                 'line-width': 8
             },
             layout: {
