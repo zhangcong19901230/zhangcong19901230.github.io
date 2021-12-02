@@ -96,13 +96,6 @@
         bearing: 160
     });
 
-    function goTo(){
-        ajax()
-    }
-    function goPosition(){
-        getPosition()
-    }
-
     map.on('load', function () {
         map.on('click', (e) => {
             let existLayersIds = []
@@ -147,12 +140,6 @@
                     path.push([val[0],val[1]])
                 })
                 addRoad(path)
-                window.addEventListener('deviceorientation', function(e){
-                    curBear=e.alpha
-                    if(map.hasImage('position')){
-                        map.setLayoutProperty('points', 'icon-rotate', curBear + 160);
-                    }
-                }, false);
             },
             error:function (e) {
                 alert("请求失败");
@@ -379,6 +366,12 @@
         }else{
             alert("定位不支持")
         }
+        window.addEventListener('deviceorientation', function(e){
+            curBear=e.alpha
+            if(map.hasImage('position')){
+                map.setLayoutProperty('points', 'icon-rotate', curBear + 160);
+            }
+        }, false);
     }
     function errobak() {
         alert("GPS信号差");
@@ -498,6 +491,13 @@
             addOutRoad()
         }
     },3000)
+
+    function goTo(){
+        ajax()
+    }
+    function goPosition(){
+        getPosition()
+    }
 </script>
 
 </body>
