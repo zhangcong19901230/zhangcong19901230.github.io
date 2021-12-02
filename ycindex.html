@@ -357,7 +357,7 @@
                 'line-cap': 'round',
                 'line-join': 'round'
             }
-        });
+        },'poilayerId');
     }
 
     function getPosition(){
@@ -425,7 +425,7 @@
                 "source":'positionSource',
                 "layout": {
                     "icon-image": "position",
-                    "icon-size": 1.2,
+                    "icon-size": 0.9,
                     "icon-rotate":0
                 }
             });
@@ -466,10 +466,10 @@
                 'line-cap': 'round',
                 'line-join': 'round'
             }
-        });
+        },'poilayerId');
     }
     var outPath = []
-    function addOutRoad() {
+    function addOutRoadAjax() {
         $.ajax({
             url:'http://101.42.135.235:6080/arcgis/rest/services/roadnet/NAServer/%E8%B7%AF%E5%BE%84/solve?f=pjson&stops='+path[0][0]+','+path[0][1]+';'+curTimePosition[0]+','+curTimePosition[1]+'&returnDirections=true&directionsOutputType=esriDOTComplete&directionsLengthUnits=esriNAUKilometers',
             async:true,
@@ -487,10 +487,12 @@
         })
     }
     setInterval(function () {
+        curTimePosition  =  [111.0392225, 34.9740575]
         if(path.length>0 && curTimePosition.length>0){
-            addOutRoad()
+            addOutRoadAjax()
         }
     },3000)
+
 
     function goTo(){
         ajax()
