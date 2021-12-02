@@ -252,7 +252,7 @@
                     'text-offset': [0, 1.25],
                     'text-anchor': 'top',*/
                     "icon-image": "poi",
-                    "icon-size": 0.6,
+                    "icon-size": 0.43,
                     "icon-rotate":0,
                     "icon-ignore-placement": true
                 }
@@ -381,8 +381,8 @@
     }
     function showPosition(position)
     {
-        var latitude = position.coords.latitude + 3.0049250000000036;
-        var longitude = position.coords.longitude - 6.22487000000001;
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
         setPosition(longitude,latitude)
         startCoor = [longitude,latitude]
         curTimePosition = [longitude,latitude]
