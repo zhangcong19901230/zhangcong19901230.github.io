@@ -419,14 +419,17 @@
             curBear=e.alpha
             if(map.hasImage('position')){
                 map.setLayoutProperty('points', 'icon-rotate', curBear + 160);
+                alert(curBear)
             }
         }, false);
     }
 
     function showPosition(position)//偏移修改
     {
-        var latitude = position.coords.latitude + 3.0049250000000036;
-        var longitude = position.coords.longitude - 6.22487000000001;
+        /*var latitude = position.coords.latitude + 3.0049250000000036;
+        var longitude = position.coords.longitude - 6.22487000000001;*/
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
         setPosition(longitude,latitude)
         startCoor = [longitude,latitude]
         curTimePosition = [longitude,latitude]
@@ -521,8 +524,8 @@
             source: 'outLineSource',
             id: 'outLine',
             paint: {
-                'line-color': '#617291',
-                'line-width': 6
+                'line-color': 'rgba(200,1,1,0.5)',
+                'line-width': 8,
             },
             layout: {
                 'line-cap': 'round',
@@ -549,9 +552,9 @@
             }
         })
     }
-    //let index = 1
+    let index = 1
     setInterval(function () {
-       /* index++
+/*        index++
         //偏移修改
         curTimePosition  =  [111.0392225, 34.9740575-index*0.00005]
         if(index>4){
