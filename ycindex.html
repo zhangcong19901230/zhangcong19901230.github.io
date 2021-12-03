@@ -118,12 +118,12 @@
                 $("#endPoint").val(name)
             })
         });
-        addMarker()
+        setPosition(111.0392225, 34.9740575)
     })
     let curTimePosition = []
     let startCoor = [111.03943,34.975025]
     let endCoor = []
-    let path = []
+    let path = [[]]
     let curBear = 0;
     function ajax() {
         $.ajax({
@@ -256,17 +256,99 @@
                     "icon-rotate":0,
                     "icon-ignore-placement": true
                 }
-            },'line');
+            },'positionId');
+            addRoad([])
         })
     }
     function addRoad(coordinates){
+        if(map.getSource('lineSource')){
+            //map.removeLayer('line')
+            //map.removeSource('lineSource')
+            let lineSource = map.getSource('lineSource')
+            lineSource.setData({
+                "type": "FeatureCollection",
+                "features": [{
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "coordinates": coordinates,
+                        "type": "LineString"
+                    }
+                }]
+            });
+            return
+        }
+        var geojson = {
+            "type": "FeatureCollection",
+            "features": [{
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "coordinates": coordinates,
+                    "type": "LineString"
+                }
+            }]
+        };
+        map.addSource('lineSource', {
+            type: 'geojson',
+            lineMetrics: true,
+            data: geojson
+        });
+        map.addLayer({
+            type: 'line',
+            source: 'lineSource',
+            id: 'line',
+            paint: {
+                'line-color': '#17ff71',
+                'line-width': 6
+            },
+            layout: {
+                'line-cap': 'round',
+                'line-join': 'round'
+            }
+        },'poiLayerId');
+
         if(map.getSource('startSource')){
-            map.removeLayer('startLayerId')
+            debugger
+            let startSource = map.getSource('startSource')
+            startSource.setData({
+                "type": "geojson",
+                "data": {
+                    "type": "FeatureCollection",
+                    "features": [
+                        {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates":[path[0][0], path[0][1]]
+                            }
+                        }
+                    ]
+                }
+            });
+            let endSource = map.getSource('endSource')
+            endSource.setData({
+                "type": "geojson",
+                "data": {
+                    "type": "FeatureCollection",
+                    "features": [
+                        {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [path[path.length-1][0], path[path.length-1][1]]
+                            }
+                        }
+                    ]
+                }
+            });
+            return
+           /* map.removeLayer('startLayerId')
             map.removeSource('startSource')
             map.removeLayer('endLayerId')
             map.removeSource('endSource')
             map.removeImage('start')
-            map.removeImage('end')
+            map.removeImage('end')*/
         }
         map.loadImage('start.png', function(error, image) {
             if (error) throw error;
@@ -296,7 +378,7 @@
                     "icon-rotate":0,
                     "icon-ignore-placement": true
                 }
-            },'poiLayerId');
+            });
         })
         map.loadImage('end.png', function(error, image) {
             if (error) throw error;
@@ -328,40 +410,10 @@
                 }
             });
         })
-        if(map.getSource('lineSource')){
-            map.removeLayer('line')
-            map.removeSource('lineSource')
-        }
-        var geojson = {
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "coordinates": coordinates,
-                    "type": "LineString"
-                }
-            }]
-        };
-        map.addSource('lineSource', {
-            type: 'geojson',
-            lineMetrics: true,
-            data: geojson
-        });
-        map.addLayer({
-            type: 'line',
-            source: 'lineSource',
-            id: 'line',
-            paint: {
-                'line-color': '#17ff71',
-                'line-width': 8
-            },
-            layout: {
-                'line-cap': 'round',
-                'line-join': 'round'
-            }
-        });
+
     }
+
+
 
     function getPosition(){
         if(window.navigator.geolocation){
@@ -423,7 +475,7 @@
 
             })
             map.addLayer({
-                "id": "points",
+                "id": "positionId",
                 "type": "symbol",
                 "source":'positionSource',
                 "layout": {
@@ -432,7 +484,8 @@
                     "icon-rotate":0,
                     "icon-ignore-placement": true
                 }
-            },'poiLayerId');
+            });
+            addMarker()
         })
     }
 
@@ -464,7 +517,7 @@
             id: 'outLine',
             paint: {
                 'line-color': '#2b3859',
-                'line-width': 8
+                'line-width': 6
             },
             layout: {
                 'line-cap': 'round',
