@@ -257,7 +257,7 @@
                     "icon-ignore-placement": true
                 }
             },'positionId');
-            addRoad([])
+            addOutRoad([])
         })
     }
     function addRoad(coordinates){
@@ -306,10 +306,9 @@
                 'line-cap': 'round',
                 'line-join': 'round'
             }
-        },'poiLayerId');
+        },'outLine');
 
         if(map.getSource('startSource')){
-            debugger
             let startSource = map.getSource('startSource')
             startSource.setData({
                 "type": "geojson",
@@ -414,7 +413,6 @@
     }
 
 
-
     function getPosition(){
         if(window.navigator.geolocation){
             navigator.geolocation.watchPosition(showPosition,errobak,{provider:'system',coordsType: 'wgs84',enableHighAccuracy:true,timeout:5000,maximumAge:20000});
@@ -428,9 +426,7 @@
             }
         }, false);
     }
-    function errobak() {
-        alert("GPS信号差");
-    }
+
     function showPosition(position)//偏移修改
     {
         var latitude = position.coords.latitude + 3.0049250000000036;
@@ -492,8 +488,21 @@
 
     function addOutRoad(coordinates){
         if(map.getSource('outLineSource')){
-            map.removeLayer('outLine')
-            map.removeSource('outLineSource')
+            /*map.removeLayer('outLine')
+            map.removeSource('outLineSource')*/
+            let outLineSource = map.getSource('outLineSource')
+            outLineSource.setData({
+                "type": "FeatureCollection",
+                "features": [{
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "coordinates": coordinates,
+                        "type": "LineString"
+                    }
+                }]
+            });
+            return
         }
         var geojson = {
             "type": "FeatureCollection",
@@ -523,7 +532,8 @@
                 'line-cap': 'round',
                 'line-join': 'round'
             }
-        },'line');
+        },'poiLayerId');
+        addRoad([])
     }
     var outPath = []
     function addOutRoadAjax() {
@@ -556,6 +566,9 @@
     }
     function goPosition(){
         getPosition()
+    }
+    function errobak() {
+        alert("GPS信号差");
     }
 </script>
 
