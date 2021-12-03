@@ -61,7 +61,7 @@
     height: 52%;" onclick="goTo()">导航</button>
     </div>
 </div>
-<div style="position: absolute;bottom:17%;right: -2%" onclick="goPosition()">
+<div style="position: absolute;bottom:17%;right: -2%">
     <img  height="60" width="60" src="goposition.png">
 </div>
 <div class="infoBoxList" id="infoBoxList">
@@ -119,6 +119,7 @@
             })
         });
         setPosition(111.0392225, 34.9740575)
+        goPosition()
     })
     let curTimePosition = []
     let startCoor = [111.03943,34.975025]
@@ -553,9 +554,15 @@
             }
         })
     }
+    //let index = 1
     setInterval(function () {
+       /* index++
         //偏移修改
-        //curTimePosition  =  [111.0392225, 34.9740575]
+        curTimePosition  =  [111.0392225, 34.9740575-index*0.00005]
+        if(index>4){
+            curTimePosition  =  [111.0392225, 34.9740575+index*0.00005]
+        }
+        setPosition(curTimePosition[0],curTimePosition[1])*/
         if(path.length>0 && curTimePosition.length>0){
             addOutRoadAjax()
         }
