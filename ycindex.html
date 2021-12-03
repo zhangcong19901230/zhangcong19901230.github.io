@@ -418,15 +418,14 @@
         window.addEventListener('deviceorientation', function(e){
             curBear=e.alpha
             if(map.hasImage('position')){
-                map.setLayoutProperty('points', 'icon-rotate', curBear + 160);
-                alert(curBear)
+                map.setLayoutProperty('positionId', 'icon-rotate', curBear + 160);
             }
         }, false);
     }
 
     function showPosition(position)//偏移修改
     {
-        /*var latitude = position.coords.latitude + 3.0049250000000036;
+/*        var latitude = position.coords.latitude + 3.0049250000000036;
         var longitude = position.coords.longitude - 6.22487000000001;*/
         var latitude = position.coords.latitude;
         var longitude = position.coords.longitude;
