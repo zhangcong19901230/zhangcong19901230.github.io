@@ -107,7 +107,7 @@
             const existLayers = map.getStyle().layers;
             existLayers.forEach(existLayer => {
                 const existLayerId = existLayer.id;
-                if (existLayerId.includes('poilayerId')) {
+                if (existLayerId.includes('poiLayerId')) {
                     existLayersIds.push(existLayer.id);
                 }
             });
@@ -240,7 +240,7 @@
                 }
             })
             map.addLayer({
-                "id": "poilayerId",
+                "id": "poiLayerId",
                 "type": "symbol",
                 "source":'poiSource',
                 "layout": {
@@ -256,7 +256,7 @@
                     "icon-rotate":0,
                     "icon-ignore-placement": true
                 }
-            });
+            },'line');
         })
     }
     function addRoad(coordinates){
@@ -296,7 +296,7 @@
                     "icon-rotate":0,
                     "icon-ignore-placement": true
                 }
-            });
+            },'poiLayerId');
         })
         map.loadImage('end.png', function(error, image) {
             if (error) throw error;
@@ -432,7 +432,7 @@
                     "icon-rotate":0,
                     "icon-ignore-placement": true
                 }
-            },'poilayerId');
+            },'poiLayerId');
         })
     }
 
