@@ -22,6 +22,15 @@
             padding: 1%;
             font-size: medium;
         }
+        .subData{
+            position: absolute;
+            left: 25%;
+            top: 12%;
+            width: 40%;
+            background: rgba(52, 116, 255, 0.5);
+            color: #fff6e6;
+            padding: 3%;
+        }
         .infoBoxList{
             position: absolute;
             left: 22%;
@@ -38,7 +47,7 @@
             display: none;
         }
         .mapboxgl-canvas{
-            background: rgb(1 255 114 / 19%);
+            background: rgb(1 255 114 / 10%);
         }
     </style>
     <script src="jquery.min.js"></script>
@@ -62,6 +71,20 @@
 <div class="infoBoxList" id="infoBoxList">
     <div style="color: #fffdfb;background: rgba(27,255,49,0.46);text-align: center;font-size: 16px">线路详情</div>
 </div>
+<!--<div class="subData">
+    <div>
+        <span>经度：</span>
+        <input id="jd"></input>
+    </div>
+    <div>
+        <span>纬度：</span>
+        <input id="wd"></input>
+    </div>
+    <div style="display: flex;justify-content: space-around">
+        <button onclick="saveData()">保存</button>
+        <button>关闭</button>
+    </div>
+</div>-->
 <script>
     mapboxgl.accessToken = 'pk.eyJ1Ijoiemhhbmdjb25nMTk5MDEyMzAiLCJhIjoiY2p5aWJ2a3RlMDh0YjNjangxYmI5cXViMSJ9.RkyTKOoRzQfoXAqs3GamLA';
     var map = new mapboxgl.Map({
@@ -73,7 +96,7 @@
             "sources": {
                 "osm-tiles": {
                     'type': 'raster',
-                    'tiles': ['http://101.42.135.235:6080/arcgis/rest/services/YCIMGNEW/MapServer/WMTS/tile/1.0.0/YCIMGNEW/default/default028mm/{z}/{y}/{x}.png'],
+                    'tiles': ['http://120.27.143.238:6080/arcgis/rest/services/slyc/MapServer/WMTS/tile/1.0.0/YCIMGNEW/default/default028mm/{z}/{y}/{x}.png'],
                     'tileSize': 256,
                     "bounds": [-180, -90, 180, 90]
                 }
@@ -114,7 +137,7 @@
             })
         });
         setPosition(111.0392225, 34.9740575)
-        goPosition()
+        //goPosition()
     })
     let curTimePosition = []
     let startCoor = [111.03943,34.975025]
@@ -432,6 +455,8 @@
         setPosition(longitude,latitude)
         startCoor = [longitude,latitude]
         curTimePosition = [longitude,latitude]
+        $("#jd").innerText = longitude
+        $("#wd").innerText = latitude
     }
     function setPosition(longitude,latitude){
         //alert("经度："+longitude + "||纬度："+latitude)
@@ -573,6 +598,9 @@
     }
     function errobak() {
         alert("GPS信号差");
+    }
+    function saveData() {
+
     }
 </script>
 
