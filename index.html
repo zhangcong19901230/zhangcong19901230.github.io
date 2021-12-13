@@ -1,199 +1,116 @@
-<!--********************************************************************
-* Copyright© 2000 - 2019 SuperMap Software Co.Ltd. All rights reserved.
-*********************************************************************-->
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title></title>
-    <script src="jsbridge-mini.js"></script>
-    <script src="ol.js"></script>
-    <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="ol.css">
+    <meta charset='utf-8' />
+    <title>导航</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+    <style>
+        body { margin:0; padding:0; }
+        #map { height: 500px}
+        .mapboxgl-ctrl-bottom-left{
+            display: none;
+        }
+        .mapboxgl-ctrl-attrib-inner{
+            display: none;
+        }
+        .mapboxgl-canvas{
+            background: rgb(1 255 114 / 10%);
+        }
+    </style>
+    <script src="jquery.min.js"></script>
 </head>
 <body>
-<div id="map" style="width: 100%;height:100%"></div>
-<script type="text/javascript">
-    var map;
-    var projection = ol.proj.get('EPSG:4326');
-    let projectionExtent = projection.getExtent();
-    let size = ol.extent.getWidth(projectionExtent) / 256;
-    let resolutions = [];
-    for (let z = 2; z < 24; ++z) {
-        resolutions[z] = size / Math.pow(2, z);
-    }
-    var layers = [
-       new ol.layer.Tile({
-            source: new ol.source.XYZ({
-                url: 'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoid2FuZ2hhaGExIiwiYSI6ImNqeHUycXF5ZDEweDQzYnBiOTcwZGoxMHAifQ.eCGuiA6erHJ7ew-Fkc7dRA'
+<div id='map'></div>
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1Ijoiemhhbmdjb25nMTk5MDEyMzAiLCJhIjoiY2p5aWJ2a3RlMDh0YjNjangxYmI5cXViMSJ9.RkyTKOoRzQfoXAqs3GamLA';
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/dark-v10',
+        center: [111.041, 34.9739],
+        zoom: 15.7,
+        pitch: 10,
+        bearing: 160
+    });
+
+    map.on('load', function () {
+        map.on('click', (e) => {
+            let existLayersIds = []
+            console.log(` ${e.lngLat}`);
+            const bbox = [
+                [e.point.x - 5, e.point.y - 5],
+                [e.point.x + 5, e.point.y + 5]
+            ];
+            const existLayers = map.getStyle().layers;
+            existLayers.forEach(existLayer => {
+                const existLayerId = existLayer.id;
+                if (existLayerId.includes('poiLayerId')) {
+                    existLayersIds.push(existLayer.id);
+                }
+            });
+            let renderFeatures = map.queryRenderedFeatures(bbox, { layers: existLayersIds });
+            renderFeatures.forEach(renderFeature => {
+                let name = renderFeature.properties.title
+                endCoor = renderFeature.geometry.coordinates
+                alert(name)
             })
+        });
+        addMarker()
+    })
+    function addMarker() {
+        map.loadImage('poi.png', function(error, image) {
+            if (error) throw error;
+            map.addImage('poi', image);
+            map.addSource('poiSource',{
+                "type": "geojson",
+                "data": {
+                    "type": "FeatureCollection",
+                    "features": [
+                       {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [111.041, 34.9739]
+                        },
+                       'properties': {
+                           'title': '电动门'
+                       }
+                       },
+                        {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [111.041, 34.971]
+                            },
+                            'properties': {
+                                'title': '综合楼'
+                            }
+                        }
+                    ]
+                }
+            })
+            map.addLayer({
+                "id": "poiLayerId",
+                "type": "symbol",
+                "source":'poiSource',
+                "layout": {
+                   /* 'text-field': ['title'],
+                    'text-font': [
+                        'Open Sans Semibold',
+                        'Arial Unicode MS Bold'
+                    ],
+                    'text-offset': [0, 1.25],
+                    'text-anchor': 'top',*/
+                    "icon-image": "poi",
+                    "icon-size": 0.43,
+                    "icon-rotate":0,
+                    "icon-ignore-placement": true
+                }
+            });
         })
-        ]
-    map = new ol.Map({
-        target: 'map',
-        layers: this.layers,
-        view: new ol.View({
-            // center: [115.9145, 31.7286],
-            center: [117.227, 31.772],
-            zoom: 17.5,
-            projection: 'EPSG:4326',
-            maxZoom: 20.5,
-            minZoom: 17,
-            // extent: [115.91, 31.72, 115.92, 31.735]
-        })
-    });
-
-
-    var locationsource = new ol.source.Vector({wrapX: false});
-    var locationvector = new ol.layer.Vector({
-        source: locationsource,
-        zIndex:101
-    });
-    locationvector.set("name","locationvector");
-    map.addLayer(locationvector);
-
-
-
-
-
-
-    //-------------------------------------------------------------h5获取位置---------------------------------------------------------//
-
-    //发起定位，开启后请拿着手机走起来
-    //在室外开启GPS定位会更准确
-/*    jsBridge.bdloc.getCurrentPosition({
-        coorType: 'WGS84',
-        watch   : true
-    }, function(position){
-        locationnow(position.latitude,position.longitude);
-    });
-    function locationnow(latitude,longitude) {
-        locationsource.clear();
-        var iconFeature = new ol.Feature({
-            geometry: new ol.geom.Point([longitude,latitude])
-        });
-        var imgsrc = "locaton.png";
-        var markstyle = new ol.style.Style({
-            image: new ol.style.Icon({
-                src: imgsrc,
-                scale:0.15
-            })
-        });
-        iconFeature.setStyle(markstyle);
-        locationsource.addFeature(iconFeature);
-        map.setView( new ol.View({
-          center: [longitude,latitude],
-        zoom: 17,
-        projection: 'EPSG:4326'
-        }));
-        curcoor = [];
-        curcoor.push([longitude,latitude]);
-
-    }*/
-
-
-
-
-
-
-
-
-
-
-
-
-    function getPosition(){
-
-        //判断浏览器是否支持HTML5 定位
-
-        if(window.navigator.geolocation){
-            //navigator.geolocation.getCurrentPosition(successfulCallback,failCallback,{enableHeightAcuracy:true,timeout:1000,maximumAge:3000})
-            navigator.geolocation.watchPosition(showPosition,showPosition,{provider:'system',coordsType: 'wgs84',enableHighAccuracy:true,timeout:5000,maximumAge:20000});
-
-        }else{
-
-            alert("你的浏览器不能使用HTML5定位")
-
-        }
-
     }
-    function errobak() {
-        alert("GPS网络差");
-    }
-
-    
-    function showPosition(position)
-    {
-        locationsource.clear();
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
-        var iconFeature = new ol.Feature({
-            geometry: new ol.geom.Point([longitude,latitude])
-        });
-        var imgsrc = "location.png";
-        var markstyle = new ol.style.Style({
-            image: new ol.style.Icon({
-                src: imgsrc,
-                scale:1.2
-            })
-        });
-        iconFeature.setStyle(markstyle);
-        locationsource.addFeature(iconFeature);
-        map.setView( new ol.View({
-          center: [longitude,latitude],
-        zoom: 18,
-        projection: 'EPSG:4326'
-        }));
-        curcoor = [];
-        curcoor.push([longitude,latitude]);
-    }
-
-
-
-    function failCallback(error){
-
-        var text ;
-
-        switch(error.code){
-
-            case error.PERMISSION_DENIED:
-
-                text ="用户拒绝对获取地理位置的请求。";
-
-                break;
-            case error.POSITION_UNAVAILABLE:
-
-                text ="位置信息是不可用的。";
-
-                break;
-
-            case error.TIMEOUT:
-
-                text ="请求用户地理位置超时。";
-
-                break;
-
-            case error.UNKNOWN_ERROR:
-
-                text ="未知错误。";
-
-                break;
-        }
-        alert(text);
-
-    }
-
-
-    /*
-      调用安卓端获取实时gps位置
-     */
-     getPosition();
-
-    //-------------------------------------------------------------h5获取位置---------------------------------------------------------//
-
-
-
-
 </script>
+
 </body>
 </html>
