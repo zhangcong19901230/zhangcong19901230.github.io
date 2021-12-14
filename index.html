@@ -18,6 +18,9 @@
         .mapboxgl-canvas{
             background: rgb(1 255 114 / 10%);
         }
+        .mapboxgl-ctrl-bottom-right{
+            display: none;
+        }
     </style>
     <script src="jquery.min.js"></script>
 </head>
@@ -28,7 +31,7 @@
     var map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/dark-v10',
-        center: [111.041, 34.9739],
+        center: [111.07822, 32.16236],
         zoom: 15.7,
         pitch: 10,
         bearing: 160
@@ -71,7 +74,7 @@
                         "type": "Feature",
                         "geometry": {
                             "type": "Point",
-                            "coordinates": [111.041, 34.9739]
+                            "coordinates": [111.0782, 32.1623]
                         },
                        'properties': {
                            'title': '电动门'
@@ -81,7 +84,7 @@
                             "type": "Feature",
                             "geometry": {
                                 "type": "Point",
-                                "coordinates": [111.041, 34.971]
+                                "coordinates": [111.0783, 32.16236]
                             },
                             'properties': {
                                 'title': '综合楼'
