@@ -28,17 +28,17 @@
 <body>
 <div id='map'></div>
 <script>
-    document.addEventListener('UniAppJSBridgeReady', function() {
+   /* document.addEventListener('UniAppJSBridgeReady', function() {
         uni.postMessage({
             data: {
                 action: '这是我传送的消息'
             }
         });//传递的消息信息，必须写在 data 对象中。
-    });
+    });*/
     mapboxgl.accessToken = 'pk.eyJ1Ijoiemhhbmdjb25nMTk5MDEyMzAiLCJhIjoiY2p5aWJ2a3RlMDh0YjNjangxYmI5cXViMSJ9.RkyTKOoRzQfoXAqs3GamLA';
     //天地图（各个区域的token可以在网上查到）
-     var vecUrl = "http://t0.tianditu.com/vec_w/wmts?tk=e90d56e5a09d1767899ad45846b0cefd";
-     var cvaUrl = "http://t0.tianditu.com/cva_w/wmts?tk=e90d56e5a09d1767899ad45846b0cefd";
+     var vecUrl = "https://t0.tianditu.com/vec_w/wmts?tk=e90d56e5a09d1767899ad45846b0cefd";
+     var cvaUrl = "https://t0.tianditu.com/cva_w/wmts?tk=e90d56e5a09d1767899ad45846b0cefd";
      //使用严格模式
      "use strict";
      //实例化source对象
