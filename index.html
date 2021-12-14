@@ -28,13 +28,56 @@
 <div id='map'></div>
 <script>
     mapboxgl.accessToken = 'pk.eyJ1Ijoiemhhbmdjb25nMTk5MDEyMzAiLCJhIjoiY2p5aWJ2a3RlMDh0YjNjangxYmI5cXViMSJ9.RkyTKOoRzQfoXAqs3GamLA';
+    //天地图（各个区域的token可以在网上查到）
+     var vecUrl = "http://t0.tianditu.com/vec_w/wmts?tk=e90d56e5a09d1767899ad45846b0cefd";
+     var cvaUrl = "http://t0.tianditu.com/cva_w/wmts?tk=e90d56e5a09d1767899ad45846b0cefd";
+     //使用严格模式
+     "use strict";
+     //实例化source对象
+     var tdtVec = {
+             "type": "raster",
+             'tiles': [
+                 vecUrl + "&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=tiles"
+              ],
+             'tileSize': 256
+     };
+     var tdtCva = {
+             "type": "raster",
+             'tiles': [
+                  cvaUrl + "&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=tiles"
+              ],
+             'tileSize': 256
+     };
     var map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/dark-v10',
+        /*style: 'mapbox://styles/mapbox/satellite-streets-v11',*/
+        style: {
+                "version": 8,
+                "sources": {
+                "tdtVec": tdtVec,
+                "tdtCva": tdtCva
+        },
+        "layers": [
+                 {
+                     "id": "tdtVec",
+                     "type": "raster",
+                     "source": "tdtVec",
+                     "minzoom": 0,
+                     "maxzoom": 22
+                    },
+                 {
+                      "id": "tdtCva",
+                     "type": "raster",
+                     "source": "tdtCva",
+                     "minzoom": 0,
+                     "maxzoom": 22
+             }
+        ],
+    },
         center: [117.07822, 32.16236],
         zoom: 15.7,
         pitch: 10,
-        bearing: 160
+        bearing: 0
     });
 
     map.on('load', function () {
@@ -60,6 +103,7 @@
             })
         });
         addMarker()
+        addPolygon()
     })
     function addMarker() {
         map.loadImage('poi.png', function(error, image) {
@@ -67,31 +111,7 @@
             map.addImage('poi', image);
             map.addSource('poiSource',{
                 "type": "geojson",
-                "data": {
-                    "type": "FeatureCollection",
-                    "features": [
-                       {
-                        "type": "Feature",
-                        "geometry": {
-                            "type": "Point",
-                            "coordinates": [117.0782, 32.1623]
-                        },
-                       'properties': {
-                           'title': '电动门'
-                       }
-                       },
-                        {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [117.0783, 32.16236]
-                            },
-                            'properties': {
-                                'title': '综合楼'
-                            }
-                        }
-                    ]
-                }
+                "data": "data/frampoi.json"
             })
             map.addLayer({
                 "id": "poiLayerId",
@@ -112,6 +132,25 @@
                 }
             });
         })
+    }
+    function addPolygon() {
+        map.addSource('farmSource',{
+            "type": "geojson",
+            "data": "data/farm.json"
+        })
+        map.addLayer({
+            "id": "farm",
+            "type": "fill-extrusion",
+            "source":'farmSource',
+            "paint":{
+                'fill-extrusion-color': ['get', 'color'],
+                 'fill-extrusion-opacity':0.3
+                //'fill-color':'red',
+                //'fill-opacity':0.3
+            }
+        });
+
+
     }
 </script>
 
