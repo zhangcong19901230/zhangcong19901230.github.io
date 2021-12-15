@@ -95,6 +95,16 @@
                     action: '息'
                 }
             });
+            uni.getLocation({
+                success: res => {
+                    console.log('location success', res)
+                    uni.openLocation({
+                        latitude: 32.16236,
+                        longitude: 117.07822,
+                        scale: 18
+                    })
+                }
+            })
             let existLayersIds = []
             console.log(` ${e.lngLat}`);
             const bbox = [
