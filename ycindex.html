@@ -650,6 +650,7 @@
         const queryInfo = {}
         if($('.point-name').val()===''){
             alert('点位名称未输入！')
+            return
         }
         queryInfo.pointName = $('.point-name').val()
         queryInfo.longitude = $('.longitude').val()
