@@ -4,8 +4,12 @@
     <meta charset='utf-8' />
     <title>导航</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+    <link href="js/map.css" rel="stylesheet">
+    <link href="js/location.css" rel="stylesheet">
+    <script src="js/map.js"></script>
+    <!-- +++ -->
+    <!-- <script src="https://apis.map.qq.com/tools/geolocation/min?key=3K2BZ-LQWCS-IFQOM-6UM34-CG6IF-66F3J&referer=myapp"></script> -->
+    <!-- +++ -->
     <style>
         body { margin:0; padding:0; }
         #map { position:absolute; top:0; bottom:0; width:100%; }
@@ -50,7 +54,7 @@
             background: rgb(1 255 114 / 10%);
         }
     </style>
-    <script src="jquery.min.js"></script>
+    <script src="js/jquery.min.js"></script>
 </head>
 <body>
 <div id='map'></div>
@@ -65,8 +69,8 @@
         <button style="background: rgb(115,222,233);top: 23%;position: absolute;right: 1%;width: 21%;height: 52%;" onclick="goTo()">导航</button>
     </div>
 </div>
-<div style="position: absolute;bottom:17%;right: -2%">
-    <img  height="60" width="60" src="goposition.png">
+<div style="position: absolute;bottom:17%;right: -2%" >
+    <img  height="60" width="60" src="static/goposition.png" class="location-img">
 </div>
 <div class="infoBoxList" id="infoBoxList">
     <div style="color: #fffdfb;background: rgba(27,255,49,0.46);text-align: center;font-size: 16px">线路详情</div>
@@ -85,6 +89,29 @@
         <button>关闭</button>
     </div>
 </div>-->
+<!-- 定位提示框 -->
+<div class="tooltip">
+    <div class="form-item">
+        <span>点位名称:</span>
+        <input type="text" placeholder="请输入点位名称" class="point-name">
+    </div>
+    <div class="form-item">
+        <span>经度:</span>
+        <input type="number" class="longitude">
+    </div>
+    <div class="form-item">
+        <span>纬度:</span>
+        <input type="number" class="latitude">
+    </div>
+    <div class="box-footer">
+        <div class="isSure">确定</div>
+        <div class="closeWin">关闭网页</div>
+    </div>
+</div>
+<!-- 遮罩层 -->
+<div class="cover-box">
+
+</div>
 <script>
     mapboxgl.accessToken = 'pk.eyJ1Ijoiemhhbmdjb25nMTk5MDEyMzAiLCJhIjoiY2p5aWJ2a3RlMDh0YjNjangxYmI5cXViMSJ9.RkyTKOoRzQfoXAqs3GamLA';
     var map = new mapboxgl.Map({
@@ -136,7 +163,7 @@
                 $("#endPoint").val(name)
             })
         });
-        setPosition(111.0392225, 34.9740575)
+        //setPosition(111.0392225, 34.9740575)
         goPosition()
     })
     let curTimePosition = []
@@ -167,7 +194,7 @@
     }
 
     function addMarker() {
-        map.loadImage('poi.png', function(error, image) {
+        map.loadImage('static/poi.png', function(error, image) {
             if (error) throw error;
             map.addImage('poi', image);
             map.addSource('poiSource',{
@@ -368,7 +395,7 @@
             map.removeImage('start')
             map.removeImage('end')*/
         }
-        map.loadImage('start.png', function(error, image) {
+        map.loadImage('static/start.png', function(error, image) {
             if (error) throw error;
             map.addImage('start', image);
             map.addSource('startSource',{
@@ -398,7 +425,7 @@
                 }
             });
         })
-        map.loadImage('end.png', function(error, image) {
+        map.loadImage('static/end.png', function(error, image) {
             if (error) throw error;
             map.addImage('end', image);
             map.addSource('endSource',{
@@ -476,7 +503,7 @@
             });
             return
         }
-        map.loadImage('curposition.png', function(error, image) {
+        map.loadImage('static/curposition.png', function(error, image) {
             if (error) throw error;
             map.addImage('position', image);
             map.addSource('positionSource',{
@@ -585,7 +612,7 @@
             curTimePosition  =  [111.0392225, 34.9740575+index*0.00005]
         }
         setPosition(curTimePosition[0],curTimePosition[1])*/
-        if(path.length>0 && curTimePosition.length>0){
+        if(path[0].length>1 && curTimePosition.length>1){
             addOutRoadAjax()
         }
     },1500)
@@ -599,9 +626,52 @@
     function errobak() {
         alert("GPS信号差");
     }
-    function saveData() {
-
+    // 获取当前位置经纬度
+    // const geolocation = new qq.maps.Geolocation();
+    // const options = {timeout: 9000};
+    $('.location-img').on('click', getCurLocation)
+    function getCurLocation() {
+        // geolocation.getLocation(showPosition, showErr, options);
+        $('.tooltip').show()
+        $('.cover-box').show()
+        $('.longitude').val(curTimePosition[0])
+        $('.latitude').val(curTimePosition[1])
     }
+    // function showPosition(position) {
+    //     $('.longitude-val').text(position.lng)
+    //     $('.latitude-val').text(position.lat)
+
+    // };
+    // function showErr() {
+    //     $('.longitude-val').text('定位失败')
+    //     $('.latitude-val').text('定位失败')
+    // };
+    $('.isSure').on('click', function() {
+        const queryInfo = {}
+        if($('.point-name').val()===''){
+            alert('点位名称未输入！')
+        }
+        queryInfo.pointName = $('.point-name').val()
+        queryInfo.longitude = $('.longitude').val()
+        queryInfo.latitude = $('.latitude').val()
+        $.ajax({
+            type: "POST",
+            url: "https://testhome.ahcheaijia.com/sxexamnavigateData/save",
+            data: JSON.stringify(queryInfo),
+            contentType: 'application/json; charset=utf-8',
+            success: function(data) {
+                $('.tooltip').hide()
+                $('.cover-box').hide()
+                alert('保存成功')
+            },
+            error: function() {
+                alert('网络请求失败')
+            }
+        })
+    })
+    $('.closeWin').on('click', function() {
+        window.close()
+    })
 </script>
 
 </body>
