@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset='utf-8' />
     <title>导航</title>
@@ -11,22 +12,244 @@
     <!-- <script src="https://apis.map.qq.com/tools/geolocation/min?key=3K2BZ-LQWCS-IFQOM-6UM34-CG6IF-66F3J&referer=myapp"></script> -->
     <!-- +++ -->
     <style>
-        body { margin:0; padding:0; }
-        #map { position:absolute; top:0; bottom:0; width:100%; }
-        .infoBox{
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .infoBox {
+            /* display: none; */
             position: absolute;
             left: 5%;
             top: 2%;
             color: #fffdfb;
-            background: rgba(2, 138, 255, 0.5);
+            background: #fff;
             display: flex;
-            height: 9%;
             flex-direction: column;
             width: 88%;
             padding: 1%;
             font-size: medium;
+            border-radius: 10px;
         }
-        .subData{
+
+        .dd {
+            position: relative;
+
+        }
+
+        .starttt {
+            padding: 15px 10px;
+        }
+
+        .starttt img {
+            width: 13px;
+            height: 13px;
+        }
+
+        .div {
+            padding: 5.5px 13px;
+            background: rgba(248, 248, 248, 0.39);
+            border-radius: 40px;
+            margin-right: 10px;
+            font-size: 13px;
+            font-family: Source Han Sans CN;
+            font-weight: 500;
+            color: #666666;
+        }
+
+        .enddd img {
+            width: 13px;
+            height: 13px;
+        }
+
+        .mid {
+            position: absolute;
+            top: 45px;
+            left: 14px;
+        }
+
+        .mid img {
+            width: 3px;
+            height: 67px;
+        }
+
+        .startPoint {
+            /* width: 300px;
+            height: 35px;
+            background: rgba(242, 243, 247, 0.39);
+            border-radius: 6px; */
+        }
+
+        .startPoint input {
+            width: 270px;
+            height: 35px;
+            margin-left: 7.5px;
+            background: rgba(242, 243, 247, 0.39);
+            border-radius: 30px;
+            border: none;
+        }
+
+        .daohang img {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            margin-left: -100px;
+            width: 200px;
+            height: 45px;
+        }
+        .daohang1 img {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            margin-left: -100px;
+            width: 200px;
+            height: 45px;
+            display: none;
+        }
+
+        .flex-row-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flex-column-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flex-column-start {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .flex-column-top {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .flex-column-top-start {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .flex-column-top-end {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: flex-start;
+        }
+
+        .flex-column-space-around {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+
+        .flex-column-center-end {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .flex-row-start {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .flex-row-top-end {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+        }
+
+        .flex-row-start-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .flex-row-start-start {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .flex-row-top-start-wrap {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .flex-row-end {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .flex-row-end-end {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+        }
+
+        .flex-row-space-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .flex-row-space-between-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .flex-row-top-space-between {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .flex-row-space-around {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .flex-row-space-evenly {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+
+        .mgl-20 {
+            margin-left: 20px;
+        }
+
+        .subData {
             position: absolute;
             left: 25%;
             top: 12%;
@@ -35,183 +258,264 @@
             color: #fff6e6;
             padding: 3%;
         }
-        .infoBoxList{
+
+        .infoBoxList {
+            padding: 15px 10px;
+            width: 315px;
+            height: 56px;
             position: absolute;
-            left: 22%;
-            bottom: 1%;
-            color: #0e0201;
-            background: rgba(91, 166, 255, 0.8);
-            height: 10%;
-            width: 48%;
-            padding: 1%;
-            overflow-y: scroll;
-            font-size: 5px;
-        }
-        .mapboxgl-ctrl-bottom-left{
+            left: 5%;
+            top: 3%;
+            background: linear-gradient(89deg, #4E79FA 0%, #7CA7FA 100%);
+            border-radius: 20px;
+            /* overflow-y: scroll; */
+            font-size: 14px;
+            color: #ffffff;
             display: none;
         }
-        .mapboxgl-canvas{
+
+        .infoBoxList-cont img {
+            width: 13px;
+            height: 13px;
+            margin-right: 8px;
+        }
+
+        .shuxian {
+            width: 3px;
+            height: 18px;
+            margin-left: 4px;
+        }
+        .dingwei{
+            position: absolute;
+            bottom: 120px;
+            right: 15px;
+        }
+        .jiantou{
+            position: absolute;
+            bottom: 70px;
+            right: 15px;
+        }
+        .dingwei img{
+            width: 53px;
+            height: 53px;
+        }
+        .jiantou img{
+            width: 53px;
+            height: 53px;
+        }
+
+        .mapboxgl-ctrl-bottom-left {
+            display: none;
+        }
+
+        .mapboxgl-canvas {
             background: rgb(1 255 114 / 10%);
         }
     </style>
     <script src="js/jquery.min.js"></script>
 </head>
+
 <body>
-<div id='map'></div>
-<div class="infoBox">
-    <div>
-        <span>起点： </span>
-        <input id="startPoint" placeholder="默认起点大门口"></input>
-    </div>
-    <div>
-        <span>终点： </span>
+    <div id='map'></div>
+    <div class="infoBox">
+        <div class="dd">
+            <div class="starttt flex-row-start ">
+                <img src="./static/star1t.png" alt="">
+                <div class="startPoint">
+                    <input id="startPoint" placeholder="  默认起点大门口" value='大门口' readonly></input>
+                </div>
+            </div>
+            <div class="flex-row-start mgl-20">
+                <div class="div" onclick="changtab(1)">卫生间</div>
+                <div class="div" onclick="changtab(2)">大门口</div>
+                <div class="div" onclick="changtab(3)">考场入口</div>
+            </div>
+            <div class="mid">
+                <img src="./static//mid.png" alt="">
+            </div>
+            <div class="starttt flex-row-start ">
+                <img src="./static/end1d.png" alt="">
+                <div class="startPoint">
+                    <input id="endPoint" placeholder="  请输入目的地" value="sda" readonly></input>
+                </div>
+            </div>
+            <div class="flex-row-start mgl-20">
+                <div class="div">卫生间</div>
+                <div class="div">大门口</div>
+                <div class="div">考场入口</div>
+            </div>
+            <!-- <div class="enddd">
+        <img src="./static/end1d.png" alt="">
         <input id="endPoint" placeholder="请点击选择终点"></input>
         <button style="background: rgb(115,222,233);top: 23%;position: absolute;right: 1%;width: 21%;height: 52%;" onclick="goTo()">导航</button>
+    </div> -->
+        </div>
     </div>
-</div>
-<div style="position: absolute;bottom:17%;right: -2%" >
-    <img  height="60" width="60" src="static/goposition.png" class="location-img">
-</div>
-<div class="infoBoxList" id="infoBoxList">
-    <div style="color: #fffdfb;background: rgba(27,255,49,0.46);text-align: center;font-size: 16px">线路详情</div>
-</div>
-<!--<div class="subData">
-    <div>
-        <span>经度：</span>
-        <input id="jd"></input>
+    <div style="position: absolute;bottom:17%;right: -2%">
+        <img height="60" width="60" src="static/goposition.png" class="location-img">
     </div>
-    <div>
-        <span>纬度：</span>
-        <input id="wd"></input>
-    </div>
-    <div style="display: flex;justify-content: space-around">
-        <button onclick="saveData()">保存</button>
-        <button>关闭</button>
-    </div>
-</div>-->
-<!-- 定位提示框 -->
-<div class="tooltip">
-    <div class="form-item">
-        <span>点位名称:</span>
-        <input type="text" placeholder="请输入点位名称" class="point-name">
-    </div>
-    <div class="form-item">
-        <span>经度:</span>
-        <input type="number" class="longitude">
-    </div>
-    <div class="form-item">
-        <span>纬度:</span>
-        <input type="number" class="latitude">
-    </div>
-    <div class="box-footer">
-        <div class="isSure">确定</div>
-        <div class="closeWin">关闭网页</div>
-    </div>
-</div>
-<!-- 遮罩层 -->
-<div class="cover-box">
+    <div class="infoBoxList" id="infoBoxList">
+        <div class="infoBoxList-cont flex-row-start">
+            <img src="./static/circle.png" alt="">
+            <div class="innerkou">考场入口</div>
+        </div>
+        <img src="./static//shuxian.png" alt="" class="shuxian">
+        <div class="infoBoxList-cont flex-row-start">
+            <img src="./static/circle.png" alt="">
+            <div class="innerkou">科二候考大厅</div>
+        </div>
+        <!-- <div style="color: #fffdfb;background: rgba(27,255,49,0.46);text-align: center;font-size: 16px">线路详情</div> -->
 
-</div>
-<script>
-    mapboxgl.accessToken = 'pk.eyJ1Ijoiemhhbmdjb25nMTk5MDEyMzAiLCJhIjoiY2p5aWJ2a3RlMDh0YjNjangxYmI5cXViMSJ9.RkyTKOoRzQfoXAqs3GamLA';
-    var map = new mapboxgl.Map({
-        container: 'map',
-        ///style: 'mapbox://styles/mapbox/dark-v10',
-        style: {
-            "version": 8,
-            "name": "Mapbox Streets",
-            "sources": {
-                "osm-tiles": {
-                    'type': 'raster',
-                    'tiles': ['http://120.27.143.238:6080/arcgis/rest/services/slyc/MapServer/WMTS/tile/1.0.0/YCIMGNEW/default/default028mm/{z}/{y}/{x}.png'],
-                    'tileSize': 256,
-                    "bounds": [-180, -90, 180, 90]
-                }
+    </div>
+    <div class="dingwei">
+        <img src="./static/dingwei.png" alt="">
+    </div>
+    <div class="jiantou">
+        <img src="./static/jiantou.png" alt="">
+    </div>
+    <div class="daohang" id="startGo" onclick='goTo()'>
+        <img src="./static/daohang.png" alt="">
+    </div>
+    <div class="daohang1" id="stopGo" onclick='gooff()'>
+        <img src="./static/offdaohang.png" alt="">
+    </div>
+
+    <!-- 定位提示框 -->
+    <div class="tooltip">
+        <div class="form-item">
+            <span>点位名称:</span>
+            <input type="text" placeholder="请输入点位名称" class="point-name">
+        </div>
+        <div class="form-item">
+            <span>经度:</span>
+            <input type="number" class="longitude">
+        </div>
+        <div class="form-item">
+            <span>纬度:</span>
+            <input type="number" class="latitude">
+        </div>
+        <div class="box-footer">
+            <div class="isSure">确定</div>
+            <div class="closeWin">关闭网页</div>
+        </div>
+    </div>
+    <!-- 遮罩层 -->
+    <div class="cover-box">
+
+    </div>
+    <script>
+        mapboxgl.accessToken =
+            'pk.eyJ1Ijoiemhhbmdjb25nMTk5MDEyMzAiLCJhIjoiY2p5aWJ2a3RlMDh0YjNjangxYmI5cXViMSJ9.RkyTKOoRzQfoXAqs3GamLA';
+        var map = new mapboxgl.Map({
+            container: 'map',
+            ///style: 'mapbox://styles/mapbox/dark-v10',
+            style: {
+                "version": 8,
+                "name": "Mapbox Streets",
+                "sources": {
+                    "osm-tiles": {
+                        'type': 'raster',
+                        'tiles': [
+                            'http://120.27.143.238:6080/arcgis/rest/services/slyc/MapServer/WMTS/tile/1.0.0/YCIMGNEW/default/default028mm/{z}/{y}/{x}.png'
+                        ],
+                        'tileSize': 256,
+                        "bounds": [-180, -90, 180, 90]
+                    }
+                },
+                "layers": [{
+                    "id": "123",
+                    "type": "raster",
+                    "source": "osm-tiles",
+                    "source-layer": "osmtiles"
+                }]
             },
-            "layers":[{
-                "id": "123",
-                "type": "raster",
-                "source": "osm-tiles",
-                "source-layer": "osmtiles"
-            }]
-        },
-        center: [111.041, 34.9739],
-        zoom: 15.7,
-        pitch: 10,
-        bearing: 160
-    });
-
-    map.on('load', function () {
-        map.on('click', (e) => {
-            let existLayersIds = []
-            console.log(` ${e.lngLat}`);
-            const bbox = [
-                [e.point.x - 5, e.point.y - 5],
-                [e.point.x + 5, e.point.y + 5]
-            ];
-            const existLayers = map.getStyle().layers;
-            existLayers.forEach(existLayer => {
-                const existLayerId = existLayer.id;
-                if (existLayerId.includes('poiLayerId')) {
-                    existLayersIds.push(existLayer.id);
-                }
-            });
-            let renderFeatures = map.queryRenderedFeatures(bbox, { layers: existLayersIds });
-            renderFeatures.forEach(renderFeature => {
-                let name = renderFeature.properties.title
-                endCoor = renderFeature.geometry.coordinates
-                $("#endPoint").val(name)
-            })
+            center: [111.041, 34.9739],
+            zoom: 15.7,
+            pitch: 10,
+            bearing: 160
         });
-        //setPosition(111.0392225, 34.9740575)
-        goPosition()
-    })
-    let curTimePosition = []
-    let startCoor = [111.03943,34.975025]
-    let endCoor = []
-    let path = [[]]
-    let curBear = 0;
-    function ajax() {
-        $.ajax({
-            url:'http://101.42.135.235:6080/arcgis/rest/services/roadnet/NAServer/%E8%B7%AF%E5%BE%84/solve?f=pjson&stops='+startCoor[0]+','+startCoor[1]+';'+endCoor[0]+','+endCoor[1]+'&returnDirections=true&directionsOutputType=esriDOTComplete&directionsLengthUnits=esriNAUKilometers',
-            async:true,
-            data:{},
-            success:function(data){
-                path = []
-                document.getElementById('infoBoxList').innerHTML = '';
-                JSON.parse(data).directions[0].features.forEach(function (val) {
-                    $('.infoBoxList').append("<div>"+val.attributes.text+"</div>")
-                })
-                JSON.parse(data).routes.features[0].geometry.paths[0].forEach(function (val) {
-                    path.push([val[0],val[1]])
-                })
-                addRoad(path)
-            },
-            error:function (e) {
-                alert("请求失败");
-            }
-        })
-    }
 
-    function addMarker() {
-        map.loadImage('static/poi.png', function(error, image) {
-            if (error) throw error;
-            map.addImage('poi', image);
-            map.addSource('poiSource',{
-                "type": "geojson",
-                "data": {
-                    "type": "FeatureCollection",
-                    "features": [
-                       {
-                        "type": "Feature",
-                        "geometry": {
-                            "type": "Point",
-                            "coordinates": [111.0396267, 34.974615]
+        map.on('load', function () {
+            map.on('click', (e) => {
+                let existLayersIds = []
+                console.log(` ${e.lngLat}`);
+                const bbox = [
+                    [e.point.x - 5, e.point.y - 5],
+                    [e.point.x + 5, e.point.y + 5]
+                ];
+                const existLayers = map.getStyle().layers;
+                existLayers.forEach(existLayer => {
+                    const existLayerId = existLayer.id;
+                    if (existLayerId.includes('poiLayerId')) {
+                        existLayersIds.push(existLayer.id);
+                    }
+                });
+                let renderFeatures = map.queryRenderedFeatures(bbox, {
+                    layers: existLayersIds
+                });
+                renderFeatures.forEach(renderFeature => {
+                    let name = renderFeature.properties.title
+                    endCoor = renderFeature.geometry.coordinates
+                    $("#endPoint").val(name)
+                })
+            });
+            //setPosition(111.0392225, 34.9740575)
+            goPosition()
+        })
+        let curTimePosition = []
+        let startCoor = [111.03943, 34.975025]
+        let endCoor = []
+        let path = [
+            []
+        ]
+        let curBear = 0;
+
+        function ajax() {
+            $.ajax({
+                url: 'http://101.42.135.235:6080/arcgis/rest/services/roadnet/NAServer/%E8%B7%AF%E5%BE%84/solve?f=pjson&stops=' +
+                    startCoor[0] + ',' + startCoor[1] + ';' + endCoor[0] + ',' + endCoor[1] +
+                    '&returnDirections=true&directionsOutputType=esriDOTComplete&directionsLengthUnits=esriNAUKilometers',
+                async: true,
+                data: {},
+                success: function (data) {
+                    path = []
+             /*       document.getElementById('infoBoxList').innerHTML = '';
+                    JSON.parse(data).directions[0].features.forEach(function (val) {
+                        $('.infoBoxList').append("<div>" + val.attributes.text + "</div>")
+                    })*/
+                    JSON.parse(data).routes.features[0].geometry.paths[0].forEach(function (val) {
+                        path.push([val[0], val[1]])
+                    })
+                    addRoad(path)
+                    document.getElementById('infoBoxList').css('display','none')
+                    document.getElementById('infoBox').css('display','block')
+                    document.getElementById('startGo').css('display','none')
+                    document.getElementById('stopGo').css('display','block')
+                },
+                error: function (e) {
+                    alert("请求失败");
+                }
+            })
+        }
+
+        function addMarker() {
+            map.loadImage('static/poi.png', function (error, image) {
+                if (error) throw error;
+                map.addImage('poi', image);
+                map.addSource('poiSource', {
+                    "type": "geojson",
+                    "data": {
+                        "type": "FeatureCollection",
+                        "features": [{
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [111.0396267, 34.974615]
+                            },
+                            'properties': {
+                                'title': '电动门'
+                            }
                         },
-                       'properties': {
-                           'title': '电动门'
-                       }
-                       },
                         {
                             "type": "Feature",
                             "geometry": {
@@ -282,266 +586,66 @@
                                 'title': '大门口'
                             }
                         }
-                    ]
-                }
-            })
-            map.addLayer({
-                "id": "poiLayerId",
-                "type": "symbol",
-                "source":'poiSource',
-                "layout": {
-                   /* 'text-field': ['title'],
-                    'text-font': [
-                        'Open Sans Semibold',
-                        'Arial Unicode MS Bold'
-                    ],
-                    'text-offset': [0, 1.25],
-                    'text-anchor': 'top',*/
-                    "icon-image": "poi",
-                    "icon-size": 0.43,
-                    "icon-rotate":0,
-                    "icon-ignore-placement": true
-                }
-            },'positionId');
-            addOutRoad([])
-        })
-    }
-    function addRoad(coordinates){
-        if(map.getSource('lineSource')){
-            //map.removeLayer('line')
-            //map.removeSource('lineSource')
-            let lineSource = map.getSource('lineSource')
-            lineSource.setData({
-                "type": "FeatureCollection",
-                "features": [{
-                    "type": "Feature",
-                    "properties": {},
-                    "geometry": {
-                        "coordinates": coordinates,
-                        "type": "LineString"
+                        ]
                     }
-                }]
-            });
-            return
-        }
-        var geojson = {
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "coordinates": coordinates,
-                    "type": "LineString"
-                }
-            }]
-        };
-        map.addSource('lineSource', {
-            type: 'geojson',
-            lineMetrics: true,
-            data: geojson
-        });
-        map.addLayer({
-            type: 'line',
-            source: 'lineSource',
-            id: 'line',
-            paint: {
-                'line-color': '#17ff71',
-                'line-width': 6
-            },
-            layout: {
-                'line-cap': 'round',
-                'line-join': 'round'
-            }
-        },'outLine');
-
-        if(map.getSource('startSource')){
-            let startSource = map.getSource('startSource')
-            startSource.setData({
-                "type": "geojson",
-                "data": {
-                    "type": "FeatureCollection",
-                    "features": [
-                        {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates":[path[0][0], path[0][1]]
-                            }
-                        }
-                    ]
-                }
-            });
-            let endSource = map.getSource('endSource')
-            endSource.setData({
-                "type": "geojson",
-                "data": {
-                    "type": "FeatureCollection",
-                    "features": [
-                        {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [path[path.length-1][0], path[path.length-1][1]]
-                            }
-                        }
-                    ]
-                }
-            });
-            return
-           /* map.removeLayer('startLayerId')
-            map.removeSource('startSource')
-            map.removeLayer('endLayerId')
-            map.removeSource('endSource')
-            map.removeImage('start')
-            map.removeImage('end')*/
-        }
-        map.loadImage('static/start.png', function(error, image) {
-            if (error) throw error;
-            map.addImage('start', image);
-            map.addSource('startSource',{
-                "type": "geojson",
-                "data": {
-                    "type": "FeatureCollection",
-                    "features": [
-                        {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates":[path[0][0], path[0][1]]
-                            }
-                        }
-                    ]
-                }
-            })
-            map.addLayer({
-                "id": "startLayerId",
-                "type": "symbol",
-                "source":'startSource',
-                "layout": {
-                    "icon-image": "start",
-                    "icon-size": 0,
-                    "icon-rotate":0,
-                    "icon-ignore-placement": true
-                }
-            });
-        })
-        map.loadImage('static/end.png', function(error, image) {
-            if (error) throw error;
-            map.addImage('end', image);
-            map.addSource('endSource',{
-                "type": "geojson",
-                "data": {
-                    "type": "FeatureCollection",
-                    "features": [
-                        {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [path[path.length-1][0], path[path.length-1][1]]
-                            }
-                        }
-                    ]
-                }
-            })
-            map.addLayer({
-                "id": "endLayerId",
-                "type": "symbol",
-                "source":'endSource',
-                "layout": {
-                    "icon-image": "end",
-                    "icon-size": 0.65,
-                    "icon-rotate":0,
-                    "icon-ignore-placement": true
-                }
-            });
-        })
-
-    }
-
-
-    function getPosition(){
-        if(window.navigator.geolocation){
-            navigator.geolocation.watchPosition(showPosition,errobak,{provider:'system',coordsType: 'wgs84',enableHighAccuracy:true,timeout:5000,maximumAge:20000});
-        }else{
-            alert("定位不支持")
-        }
-        window.addEventListener('deviceorientation', function(e){
-            curBear=e.alpha
-            if(map.hasImage('position')){
-                map.setLayoutProperty('positionId', 'icon-rotate', curBear + 160);
-            }
-        }, false);
-    }
-
-    function showPosition(position)//偏移修改
-    {
-/*        var latitude = position.coords.latitude + 3.0049250000000036;
-        var longitude = position.coords.longitude - 6.22487000000001;*/
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
-        setPosition(longitude,latitude)
-        startCoor = [longitude,latitude]
-        curTimePosition = [longitude,latitude]
-        $("#jd").innerText = longitude
-        $("#wd").innerText = latitude
-    }
-    function setPosition(longitude,latitude){
-        //alert("经度："+longitude + "||纬度："+latitude)
-        map.setCenter([longitude, latitude]);
-        let positionSource = map.getSource('positionSource')
-        if(positionSource){
-            positionSource.setData({
-                "type": "FeatureCollection",
-                "features": [{
-                    "type": "Feature",
-                    "properties": {"name": "Null Island"},
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [ longitude, latitude ]
+                })
+                map.addLayer({
+                    "id": "poiLayerId",
+                    "type": "symbol",
+                    "source": 'poiSource',
+                    "layout": {
+                        /* 'text-field': ['title'],
+                         'text-font': [
+                             'Open Sans Semibold',
+                             'Arial Unicode MS Bold'
+                         ],
+                         'text-offset': [0, 1.25],
+                         'text-anchor': 'top',*/
+                        "icon-image": "poi",
+                        "icon-size": 0.43,
+                        "icon-rotate": 0,
+                        "icon-ignore-placement": true
                     }
-                }]
-            });
-            return
+                }, 'positionId');
+                addOutRoad([])
+            })
         }
-        map.loadImage('static/curposition.png', function(error, image) {
-            if (error) throw error;
-            map.addImage('position', image);
-            map.addSource('positionSource',{
-                "type": "geojson",
-                "data": {
+
+        function changtab(id) {
+            var obtn = document.getElementById('startPoint')
+            // console.log(id)
+            // debugger
+            if (id == 1) {
+                obtn.value = '卫生间'
+            }
+            if (id == 2) {
+                obtn.value = '大门口'
+            }
+            if (id == 3) {
+                // vall = '厨房'
+                obtn.value = '厨房'
+            }
+        }
+
+        function addRoad(coordinates) {
+            if (map.getSource('lineSource')) {
+                //map.removeLayer('line')
+                //map.removeSource('lineSource')
+                let lineSource = map.getSource('lineSource')
+                lineSource.setData({
                     "type": "FeatureCollection",
                     "features": [{
                         "type": "Feature",
+                        "properties": {},
                         "geometry": {
-                            "type": "Point",
-                            "coordinates": [117.2035, 31.8422827574]
+                            "coordinates": coordinates,
+                            "type": "LineString"
                         }
                     }]
-                }
-
-            })
-            map.addLayer({
-                "id": "positionId",
-                "type": "symbol",
-                "source":'positionSource',
-                "layout": {
-                    "icon-image": "position",
-                    "icon-size": 0.7,
-                    "icon-rotate":0,
-                    "icon-ignore-placement": true
-                }
-            });
-            addMarker()
-        })
-    }
-
-
-    function addOutRoad(coordinates){
-        if(map.getSource('outLineSource')){
-            /*map.removeLayer('outLine')
-            map.removeSource('outLineSource')*/
-            let outLineSource = map.getSource('outLineSource')
-            outLineSource.setData({
+                });
+                return
+            }
+            var geojson = {
                 "type": "FeatureCollection",
                 "features": [{
                     "type": "Feature",
@@ -551,129 +655,364 @@
                         "type": "LineString"
                     }
                 }]
+            };
+            map.addSource('lineSource', {
+                type: 'geojson',
+                lineMetrics: true,
+                data: geojson
             });
-            return
-        }
-        var geojson = {
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "coordinates": coordinates,
-                    "type": "LineString"
+            map.addLayer({
+                type: 'line',
+                source: 'lineSource',
+                id: 'line',
+                paint: {
+                    'line-color': '#17ff71',
+                    'line-width': 6
+                },
+                layout: {
+                    'line-cap': 'round',
+                    'line-join': 'round'
                 }
-            }]
-        };
-        map.addSource('outLineSource', {
-            type: 'geojson',
-            lineMetrics: true,
-            data: geojson
-        });
-        map.addLayer({
-            type: 'line',
-            source: 'outLineSource',
-            id: 'outLine',
-            paint: {
-                'line-color': 'rgba(200,1,1,0.5)',
-                'line-width': 8,
-            },
-            layout: {
-                'line-cap': 'round',
-                'line-join': 'round'
+            }, 'outLine');
+
+            if (map.getSource('startSource')) {
+                let startSource = map.getSource('startSource')
+                startSource.setData({
+                    "type": "geojson",
+                    "data": {
+                        "type": "FeatureCollection",
+                        "features": [{
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [path[0][0], path[0][1]]
+                            }
+                        }]
+                    }
+                });
+                let endSource = map.getSource('endSource')
+                endSource.setData({
+                    "type": "geojson",
+                    "data": {
+                        "type": "FeatureCollection",
+                        "features": [{
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [path[path.length - 1][0], path[path.length - 1][1]]
+                            }
+                        }]
+                    }
+                });
+                return
+                /* map.removeLayer('startLayerId')
+                 map.removeSource('startSource')
+                 map.removeLayer('endLayerId')
+                 map.removeSource('endSource')
+                 map.removeImage('start')
+                 map.removeImage('end')*/
             }
-        },'poiLayerId');
-        addRoad([])
-    }
-    var outPath = []
-    function addOutRoadAjax() {
-        $.ajax({
-            url:'http://101.42.135.235:6080/arcgis/rest/services/roadnet/NAServer/%E8%B7%AF%E5%BE%84/solve?f=pjson&stops='+path[0][0]+','+path[0][1]+';'+curTimePosition[0]+','+curTimePosition[1]+'&returnDirections=true&directionsOutputType=esriDOTComplete&directionsLengthUnits=esriNAUKilometers',
-            async:true,
-            data:{},
-            success:function(data){
-                outPath = []
-                JSON.parse(data).routes.features[0].geometry.paths[0].forEach(function (val) {
-                    outPath.push([val[0],val[1]])
+            map.loadImage('static/start.png', function (error, image) {
+                if (error) throw error;
+                map.addImage('start', image);
+                map.addSource('startSource', {
+                    "type": "geojson",
+                    "data": {
+                        "type": "FeatureCollection",
+                        "features": [{
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [path[0][0], path[0][1]]
+                            }
+                        }]
+                    }
                 })
-                addOutRoad(outPath)
-            },
-            error:function (e) {
-                alert("请求失败");
-            }
-        })
-    }
-    let index = 1
-    setInterval(function () {
-/*        index++
-        //偏移修改
-        curTimePosition  =  [111.0392225, 34.9740575-index*0.00005]
-        if(index>4){
-            curTimePosition  =  [111.0392225, 34.9740575+index*0.00005]
-        }
-        setPosition(curTimePosition[0],curTimePosition[1])*/
-        if(path[0].length>1 && curTimePosition.length>1){
-            addOutRoadAjax()
-        }
-    },1500)
+                map.addLayer({
+                    "id": "startLayerId",
+                    "type": "symbol",
+                    "source": 'startSource',
+                    "layout": {
+                        "icon-image": "start",
+                        "icon-size": 0,
+                        "icon-rotate": 0,
+                        "icon-ignore-placement": true
+                    }
+                });
+            })
+            map.loadImage('static/end.png', function (error, image) {
+                if (error) throw error;
+                map.addImage('end', image);
+                map.addSource('endSource', {
+                    "type": "geojson",
+                    "data": {
+                        "type": "FeatureCollection",
+                        "features": [{
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [path[path.length - 1][0], path[path.length - 1][
+                                    1
+                                ]]
+                            }
+                        }]
+                    }
+                })
+                map.addLayer({
+                    "id": "endLayerId",
+                    "type": "symbol",
+                    "source": 'endSource',
+                    "layout": {
+                        "icon-image": "end",
+                        "icon-size": 0.65,
+                        "icon-rotate": 0,
+                        "icon-ignore-placement": true
+                    }
+                });
+            })
 
-    function goTo(){
-        ajax()
-    }
-    function goPosition(){
-        getPosition()
-    }
-    function errobak() {
-        alert("GPS信号差");
-    }
-    // 获取当前位置经纬度
-    // const geolocation = new qq.maps.Geolocation();
-    // const options = {timeout: 9000};
-    $('.location-img').on('click', getCurLocation)
-    function getCurLocation() {
-        // geolocation.getLocation(showPosition, showErr, options);
-        $('.tooltip').show()
-        $('.cover-box').show()
-        $('.longitude').val(curTimePosition[0])
-        $('.latitude').val(curTimePosition[1])
-    }
-    // function showPosition(position) {
-    //     $('.longitude-val').text(position.lng)
-    //     $('.latitude-val').text(position.lat)
-
-    // };
-    // function showErr() {
-    //     $('.longitude-val').text('定位失败')
-    //     $('.latitude-val').text('定位失败')
-    // };
-    $('.isSure').on('click', function() {
-        const queryInfo = {}
-        if($('.point-name').val()===''){
-            alert('点位名称未输入！')
-            return
         }
-        queryInfo.pointName = $('.point-name').val()
-        queryInfo.longitude = $('.longitude').val()
-        queryInfo.latitude = $('.latitude').val()
-        $.ajax({
-            type: "POST",
-            url: "https://testhome.ahcheaijia.com/sxexamnavigateData/save",
-            data: JSON.stringify(queryInfo),
-            contentType: 'application/json; charset=utf-8',
-            success: function(data) {
-                $('.tooltip').hide()
-                $('.cover-box').hide()
-                alert('保存成功')
-            },
-            error: function() {
-                alert('网络请求失败')
+
+        function getPosition() {
+            if (window.navigator.geolocation) {
+                navigator.geolocation.watchPosition(showPosition, errobak, {
+                    provider: 'system',
+                    coordsType: 'wgs84',
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 20000
+                });
+            } else {
+                alert("定位不支持")
             }
+            window.addEventListener('deviceorientation', function (e) {
+                curBear = e.alpha
+                if (map.hasImage('position')) {
+                    map.setLayoutProperty('positionId', 'icon-rotate', curBear + 160);
+                }
+            }, false);
+        }
+
+        function showPosition(position) //偏移修改
+        {
+            /*        var latitude = position.coords.latitude + 3.0049250000000036;
+                    var longitude = position.coords.longitude - 6.22487000000001;*/
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            setPosition(longitude, latitude)
+            startCoor = [longitude, latitude]
+            curTimePosition = [longitude, latitude]
+            $("#jd").innerText = longitude
+            $("#wd").innerText = latitude
+        }
+
+        function setPosition(longitude, latitude) {
+            //alert("经度："+longitude + "||纬度："+latitude)
+            map.setCenter([longitude, latitude]);
+            let positionSource = map.getSource('positionSource')
+            if (positionSource) {
+                positionSource.setData({
+                    "type": "FeatureCollection",
+                    "features": [{
+                        "type": "Feature",
+                        "properties": {
+                            "name": "Null Island"
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [longitude, latitude]
+                        }
+                    }]
+                });
+                return
+            }
+            map.loadImage('static/curposition.png', function (error, image) {
+                if (error) throw error;
+                map.addImage('position', image);
+                map.addSource('positionSource', {
+                    "type": "geojson",
+                    "data": {
+                        "type": "FeatureCollection",
+                        "features": [{
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [117.2035, 31.8422827574]
+                            }
+                        }]
+                    }
+
+                })
+                map.addLayer({
+                    "id": "positionId",
+                    "type": "symbol",
+                    "source": 'positionSource',
+                    "layout": {
+                        "icon-image": "position",
+                        "icon-size": 0.7,
+                        "icon-rotate": 0,
+                        "icon-ignore-placement": true
+                    }
+                });
+                addMarker()
+            })
+        }
+
+
+        function addOutRoad(coordinates) {
+            if (map.getSource('outLineSource')) {
+                /*map.removeLayer('outLine')
+                map.removeSource('outLineSource')*/
+                let outLineSource = map.getSource('outLineSource')
+                outLineSource.setData({
+                    "type": "FeatureCollection",
+                    "features": [{
+                        "type": "Feature",
+                        "properties": {},
+                        "geometry": {
+                            "coordinates": coordinates,
+                            "type": "LineString"
+                        }
+                    }]
+                });
+                return
+            }
+            var geojson = {
+                "type": "FeatureCollection",
+                "features": [{
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "coordinates": coordinates,
+                        "type": "LineString"
+                    }
+                }]
+            };
+            map.addSource('outLineSource', {
+                type: 'geojson',
+                lineMetrics: true,
+                data: geojson
+            });
+            map.addLayer({
+                type: 'line',
+                source: 'outLineSource',
+                id: 'outLine',
+                paint: {
+                    'line-color': 'rgba(200,1,1,0.5)',
+                    'line-width': 8,
+                },
+                layout: {
+                    'line-cap': 'round',
+                    'line-join': 'round'
+                }
+            }, 'poiLayerId');
+            addRoad([])
+        }
+        var outPath = []
+
+        function addOutRoadAjax() {
+            $.ajax({
+                url: 'http://101.42.135.235:6080/arcgis/rest/services/roadnet/NAServer/%E8%B7%AF%E5%BE%84/solve?f=pjson&stops=' +
+                    path[0][0] + ',' + path[0][1] + ';' + curTimePosition[0] + ',' + curTimePosition[1] +
+                    '&returnDirections=true&directionsOutputType=esriDOTComplete&directionsLengthUnits=esriNAUKilometers',
+                async: true,
+                data: {},
+                success: function (data) {
+                    outPath = []
+                    JSON.parse(data).routes.features[0].geometry.paths[0].forEach(function (val) {
+                        outPath.push([val[0], val[1]])
+                    })
+                    addOutRoad(outPath)
+                },
+                error: function (e) {
+                    alert("请求失败");
+                }
+            })
+        }
+        let index = 1
+        setInterval(function () {
+            /*        index++
+                    //偏移修改
+                    curTimePosition  =  [111.0392225, 34.9740575-index*0.00005]
+                    if(index>4){
+                        curTimePosition  =  [111.0392225, 34.9740575+index*0.00005]
+                    }
+                    setPosition(curTimePosition[0],curTimePosition[1])*/
+            if (path[0].length > 1 && curTimePosition.length > 1) {
+                addOutRoadAjax()
+            }
+        }, 1500)
+
+        function goTo() {
+            ajax()
+        }
+
+        function goPosition() {
+            getPosition()
+        }
+
+        function errobak() {
+            alert("GPS信号差");
+        }
+        // 获取当前位置经纬度
+        // const geolocation = new qq.maps.Geolocation();
+        // const options = {timeout: 9000};
+        $('.location-img').on('click', getCurLocation)
+
+        function getCurLocation() {
+            // geolocation.getLocation(showPosition, showErr, options);
+            $('.tooltip').show()
+            $('.cover-box').show()
+            $('.longitude').val(curTimePosition[0])
+            $('.latitude').val(curTimePosition[1])
+        }
+        // function showPosition(position) {
+        //     $('.longitude-val').text(position.lng)
+        //     $('.latitude-val').text(position.lat)
+
+        // };
+        // function showErr() {
+        //     $('.longitude-val').text('定位失败')
+        //     $('.latitude-val').text('定位失败')
+        // };
+        $('.isSure').on('click', function () {
+            const queryInfo = {}
+            if ($('.point-name').val() === '') {
+                alert('点位名称未输入！')
+                return
+            }
+            queryInfo.pointName = $('.point-name').val()
+            queryInfo.longitude = $('.longitude').val()
+            queryInfo.latitude = $('.latitude').val()
+            $.ajax({
+                type: "POST",
+                url: "https://sx.slywhj.com/sxexam/wechat/navigateData/save",
+                data: JSON.stringify(queryInfo),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    $('.tooltip').hide()
+                    $('.cover-box').hide()
+                    alert('保存成功')
+                },
+                error: function () {
+                    alert('网络请求失败')
+                }
+            })
         })
-    })
-    $('.closeWin').on('click', function() {
-        window.close()
-    })
-</script>
+        $('.closeWin').on('click', function () {
+            window.close()
+        })
+
+        function gooff() {
+            document.getElementById('infoBoxList').css('display','block')
+            document.getElementById('infoBox').css('display','none')
+            document.getElementById('startGo').css('display','block')
+            document.getElementById('stopGo').css('display','none')
+            map.removeLayer('line')
+            map.removeSource('lineSource')
+        }
+    </script>
 
 </body>
+
 </html>
