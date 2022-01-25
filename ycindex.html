@@ -359,12 +359,12 @@
     <div class="infoBoxList" id="infoBoxList">
         <div class="infoBoxList-cont flex-row-start">
             <img src="./static/circle.png" alt="">
-            <div class="innerkou">考场入口</div>
+            <div class="innerkou" id="startGoing">大门口</div>
         </div>
         <img src="./static//shuxian.png" alt="" class="shuxian">
         <div class="infoBoxList-cont flex-row-start">
             <img src="./static/circle.png" alt="">
-            <div class="innerkou">科二候考大厅</div>
+            <div class="innerkou" id="endGoing">考场入口</div>
         </div>
         <!-- <div style="color: #fffdfb;background: rgba(27,255,49,0.46);text-align: center;font-size: 16px">线路详情</div> -->
     </div>
@@ -436,12 +436,12 @@
             bearing: 160
         });
         const positionData = {
-            'wc':[111.0408567, 34.97405333],
-            'door':[111.0392225, 34.9740575],
-            'entrance':[111.03943, 34.975025]
+            'wc':[111.03879046717645, 34.973900863098535],
+            'door':[111.03935115101564, 34.97514502134055],
+            'entrance':[111.03997318244973, 34.97400048210871]
         }
         map.on('load', function () {
-/*            map.on('click', (e) => {
+            map.on('click', (e) => {
                 let existLayersIds = []
                 console.log(` ${e.lngLat}`);
                 const bbox = [
@@ -463,11 +463,11 @@
                     endCoor = renderFeature.geometry.coordinates
                     $("#endPoint").val(name)
                 })
-            });*/
-            getPosition()
+            });
+            //getPosition()
         })
         let curTimePosition = []
-        let startCoor = [111.03943, 34.975025] //默认起点
+        let startCoor = [111.03935115101564, 34.97514502134055] //默认起点
         let endCoor = [111.0408567, 34.97405333] //默认终点
         let path = [
             []
@@ -627,6 +627,7 @@
                     obtn.value = '考场入口';
                 }
                 startCoor = positionData[id]
+                $("#startGoing").html(obtn.value)
             }
             if(type === 'end'){
                 var obtn = document.getElementById('endPoint')
@@ -640,6 +641,7 @@
                     obtn.value = '考场入口';
                 }
                 endCoor = positionData[id]
+                $("#endGoing").html(obtn.value)
             }
         }
 
