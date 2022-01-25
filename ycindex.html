@@ -459,8 +459,7 @@
                     $("#endPoint").val(name)
                 })
             });
-            //setPosition(111.0392225, 34.9740575)
-            goPosition()
+            getPosition()
         })
         let curTimePosition = []
         let startCoor = [111.03943, 34.975025]
@@ -469,8 +468,7 @@
             []
         ]
         let curBear = 0;
-
-        function ajax() {
+        function goTo() {
             $.ajax({
                 url: 'http://101.42.135.235:6080/arcgis/rest/services/roadnet/NAServer/%E8%B7%AF%E5%BE%84/solve?f=pjson&stops=' +
                     startCoor[0] + ',' + startCoor[1] + ';' + endCoor[0] + ',' + endCoor[1] +
@@ -772,7 +770,9 @@
             })
 
         }
-
+        /**
+         * @description 当前位置获取
+         * */
         function getPosition() {
             if (window.navigator.geolocation) {
                 navigator.geolocation.watchPosition(showPosition, errobak, {
@@ -795,10 +795,10 @@
 
         function showPosition(position) //偏移修改
         {
-            /*        var latitude = position.coords.latitude + 3.0049250000000036;
-                    var longitude = position.coords.longitude - 6.22487000000001;*/
-            var latitude = position.coords.latitude;
-            var longitude = position.coords.longitude;
+                    var latitude = position.coords.latitude + 3.0049250000000036;
+                    var longitude = position.coords.longitude - 6.22487000000001;
+  /*          var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;*/
             setPosition(longitude, latitude)
             startCoor = [longitude, latitude]
             curTimePosition = [longitude, latitude]
@@ -929,6 +929,11 @@
                 }
             })
         }
+
+        /**
+         * 经过的线
+         * @type {number}
+         */
         let index = 1
         setInterval(function () {
             /*        index++
@@ -943,13 +948,6 @@
             }
         }, 1500)
 
-        function goTo() {
-            ajax()
-        }
-
-        function goPosition() {
-            getPosition()
-        }
 
         function errobak() {
             alert("GPS信号差");
