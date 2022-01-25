@@ -441,7 +441,7 @@
             'entrance':[111.03997318244973, 34.97400048210871]
         }
         map.on('load', function () {
-            map.on('click', (e) => {
+    /*        map.on('click', (e) => {
                 let existLayersIds = []
                 console.log(` ${e.lngLat}`);
                 const bbox = [
@@ -463,8 +463,8 @@
                     endCoor = renderFeature.geometry.coordinates
                     $("#endPoint").val(name)
                 })
-            });
-            //getPosition()
+            });*/
+            getPosition()
         })
         let curTimePosition = []
         let startCoor = [111.03935115101564, 34.97514502134055] //默认起点
