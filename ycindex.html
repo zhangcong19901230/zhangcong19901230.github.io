@@ -326,23 +326,23 @@
                 </div>
             </div>
             <div class="flex-row-start mgl-20">
-                <div class="div" onclick="changtab(1)">卫生间</div>
-                <div class="div" onclick="changtab(2)">大门口</div>
-                <div class="div" onclick="changtab(3)">考场入口</div>
+                <div class="div" onclick="changtab('wc','start')">卫生间</div>
+                <div class="div" onclick="changtab('door','start')">大门口</div>
+                <div class="div" onclick="changtab('entrance','start')">考场入口</div>
             </div>
             <div class="mid">
                 <img src="./static//mid.png" alt="">
             </div>
             <div class="starttt flex-row-start ">
                 <img src="./static/end1d.png" alt="">
-                <div class="startPoint">
+                <div class="startPoint endPoint">
                     <input id="endPoint" placeholder="  请输入目的地" value="sda" readonly></input>
                 </div>
             </div>
             <div class="flex-row-start mgl-20">
-                <div class="div">卫生间</div>
-                <div class="div">大门口</div>
-                <div class="div">考场入口</div>
+                <div class="div" onclick="changtab('wc','end')">卫生间</div>
+                <div class="div" onclick="changtab('door','end')">大门口</div>
+                <div class="div" onclick="changtab('entrance','end')">考场入口</div>
             </div>
             <!-- <div class="enddd">
         <img src="./static/end1d.png" alt="">
@@ -434,9 +434,13 @@
             pitch: 10,
             bearing: 160
         });
-
+        const positionData = {
+            'wc':[111.03943, 34.975025],
+            'door':[111.0392225, 34.9740575],
+            'entrance':[111.03943, 34.975025]
+        }
         map.on('load', function () {
-            map.on('click', (e) => {
+/*            map.on('click', (e) => {
                 let existLayersIds = []
                 console.log(` ${e.lngLat}`);
                 const bbox = [
@@ -458,11 +462,11 @@
                     endCoor = renderFeature.geometry.coordinates
                     $("#endPoint").val(name)
                 })
-            });
+            });*/
             getPosition()
         })
         let curTimePosition = []
-        let startCoor = [111.03943, 34.975025]
+        let startCoor = [111.03943, 34.975025] //默认起点
         let endCoor = []
         let path = [
             []
@@ -485,10 +489,10 @@
                         path.push([val[0], val[1]])
                     })
                     addRoad(path)
-                    document.getElementById('infoBoxList').css('display','none')
-                    document.getElementById('infoBox').css('display','block')
-                    document.getElementById('startGo').css('display','none')
-                    document.getElementById('stopGo').css('display','block')
+                    $('#infoBoxList').css('display','none')
+                    $('#infoBox').css('display','block')
+                    $('#startGo').css('display','none')
+                    $('#stopGo').css('display','block')
                 },
                 error: function (e) {
                     alert("请求失败");
@@ -609,19 +613,32 @@
             })
         }
 
-        function changtab(id) {
-            var obtn = document.getElementById('startPoint')
-            // console.log(id)
-            // debugger
-            if (id == 1) {
-                obtn.value = '卫生间'
+        function changtab(id,type) {
+            if(type === 'start'){
+                var obtn = document.getElementById('startPoint')
+                if (id == 'wc') {
+                    obtn.value = '卫生间';
+                }
+                if (id == 'door') {
+                    obtn.value = '大门口';
+                }
+                if (id == 'entrance') {
+                    obtn.value = '考场入口';
+                }
+                startCoor = positionData[id]
             }
-            if (id == 2) {
-                obtn.value = '大门口'
-            }
-            if (id == 3) {
-                // vall = '厨房'
-                obtn.value = '厨房'
+            if(type === 'end'){
+                var obtn = document.getElementById('endPoint')
+                if (id == 'wc') {
+                    obtn.value = '卫生间'
+                }
+                if (id == 'door') {
+                    obtn.value = '大门口'
+                }
+                if (id == 'entrance') {
+                    obtn.value = '考场入口';
+                }
+                endCoor = positionData[id]
             }
         }
 
@@ -800,7 +817,7 @@
   /*          var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;*/
             setPosition(longitude, latitude)
-            startCoor = [longitude, latitude]
+            //startCoor = [longitude, latitude]
             curTimePosition = [longitude, latitude]
             $("#jd").innerText = longitude
             $("#wd").innerText = latitude
@@ -1002,10 +1019,10 @@
         })
 
         function gooff() {
-            document.getElementById('infoBoxList').css('display','block')
-            document.getElementById('infoBox').css('display','none')
-            document.getElementById('startGo').css('display','block')
-            document.getElementById('stopGo').css('display','none')
+            $('#infoBoxList').css('display','block')
+            $('#infoBox').css('display','none')
+            $('#startGo').css('display','block')
+            $('#stopGo').css('display','none')
             map.removeLayer('line')
             map.removeSource('lineSource')
         }
