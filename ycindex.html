@@ -103,6 +103,7 @@
             margin-left: -100px;
             width: 200px;
             height: 45px;
+            display: block;
         }
         .daohang1 img {
             position: absolute;
@@ -111,9 +112,10 @@
             margin-left: -100px;
             width: 200px;
             height: 45px;
+        }
+        .daohang1{
             display: none;
         }
-
         .flex-row-center {
             display: flex;
             align-items: center;
@@ -317,7 +319,7 @@
 
 <body>
     <div id='map'></div>
-    <div class="infoBox">
+    <div class="infoBox" id="infoBox">
         <div class="dd">
             <div class="starttt flex-row-start ">
                 <img src="./static/star1t.png" alt="">
@@ -336,7 +338,7 @@
             <div class="starttt flex-row-start ">
                 <img src="./static/end1d.png" alt="">
                 <div class="startPoint endPoint">
-                    <input id="endPoint" placeholder="  请输入目的地" value="sda" readonly></input>
+                    <input id="endPoint" placeholder="  请输入目的地" value="考场入口" readonly></input>
                 </div>
             </div>
             <div class="flex-row-start mgl-20">
@@ -365,7 +367,6 @@
             <div class="innerkou">科二候考大厅</div>
         </div>
         <!-- <div style="color: #fffdfb;background: rgba(27,255,49,0.46);text-align: center;font-size: 16px">线路详情</div> -->
-
     </div>
     <div class="dingwei">
         <img src="./static/dingwei.png" alt="">
@@ -435,7 +436,7 @@
             bearing: 160
         });
         const positionData = {
-            'wc':[111.03943, 34.975025],
+            'wc':[111.0408567, 34.97405333],
             'door':[111.0392225, 34.9740575],
             'entrance':[111.03943, 34.975025]
         }
@@ -467,7 +468,7 @@
         })
         let curTimePosition = []
         let startCoor = [111.03943, 34.975025] //默认起点
-        let endCoor = []
+        let endCoor = [111.0408567, 34.97405333] //默认终点
         let path = [
             []
         ]
@@ -489,8 +490,8 @@
                         path.push([val[0], val[1]])
                     })
                     addRoad(path)
-                    $('#infoBoxList').css('display','none')
-                    $('#infoBox').css('display','block')
+                    $('#infoBoxList').css('display','block')
+                    $('#infoBox').css('display','none')
                     $('#startGo').css('display','none')
                     $('#stopGo').css('display','block')
                 },
@@ -1019,8 +1020,8 @@
         })
 
         function gooff() {
-            $('#infoBoxList').css('display','block')
-            $('#infoBox').css('display','none')
+            $('#infoBoxList').css('display','none')
+            $('#infoBox').css('display','block')
             $('#startGo').css('display','block')
             $('#stopGo').css('display','none')
             map.removeLayer('line')
