@@ -815,10 +815,10 @@
 
         function showPosition(position) //偏移修改
         {
-                    var latitude = position.coords.latitude + 3.0049250000000036;
-                    var longitude = position.coords.longitude - 6.22487000000001;
-  /*          var latitude = position.coords.latitude;
-            var longitude = position.coords.longitude;*/
+/*                    var latitude = position.coords.latitude + 3.0049250000000036;
+                    var longitude = position.coords.longitude - 6.22487000000001;*/
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
             setPosition(longitude, latitude)
             //startCoor = [longitude, latitude]
             curTimePosition = [longitude, latitude]
