@@ -97,91 +97,15 @@
 		   url: '/pages/index/map?id='+'ok'
 		});  
 
-            uni.postMessage({
-                data: {
-                    action: '息'
-                }
-            });
- /*           uni.getLocation({
-                success: res => {
-                    console.log('location success', res)
-                    uni.openLocation({
-                        latitude: 32.16236,
-                        longitude: 117.07822,
-                        scale: 18
-                    })
-                }
-            })*/
-            let existLayersIds = []
-            console.log(` ${e.lngLat}`);
-            const bbox = [
-                [e.point.x - 5, e.point.y - 5],
-                [e.point.x + 5, e.point.y + 5]
-            ];
-            const existLayers = map.getStyle().layers;
-            existLayers.forEach(existLayer => {
-                const existLayerId = existLayer.id;
-                if (existLayerId.includes('poiLayerId')) {
-                    existLayersIds.push(existLayer.id);
-                }
-            });
-            let renderFeatures = map.queryRenderedFeatures(bbox, { layers: existLayersIds });
-            renderFeatures.forEach(renderFeature => {
-                let name = renderFeature.properties.title
-                endCoor = renderFeature.geometry.coordinates
-                alert(name)
-            })
+           // uni.postMessage({
+              //  data: {
+              //    //  action: '息'
+               // }
+           // });
+
         });
-        addMarker()
-        addPolygon()
     })
-    function addMarker() {
-        map.loadImage('poi.png', function(error, image) {
-            if (error) throw error;
-            map.addImage('poi', image);
-            map.addSource('poiSource',{
-                "type": "geojson",
-                "data": "frampoi.json"
-            })
-            map.addLayer({
-                "id": "poiLayerId",
-                "type": "symbol",
-                "source":'poiSource',
-                "layout": {
-                   /* 'text-field': ['title'],
-                    'text-font': [
-                        'Open Sans Semibold',
-                        'Arial Unicode MS Bold'
-                    ],
-                    'text-offset': [0, 1.25],
-                    'text-anchor': 'top',*/
-                    "icon-image": "poi",
-                    "icon-size": 0.43,
-                    "icon-rotate":0,
-                    "icon-ignore-placement": true
-                }
-            });
-        })
-    }
-    function addPolygon() {
-        map.addSource('farmSource',{
-            "type": "geojson",
-            "data": "farm.json"
-        })
-        map.addLayer({
-            "id": "farm",
-            "type": "fill-extrusion",
-            "source":'farmSource',
-            "paint":{
-                'fill-extrusion-color': ['get', 'color'],
-                 'fill-extrusion-opacity':0.3
-                //'fill-color':'red',
-                //'fill-opacity':0.3
-            }
-        });
 
-
-    }
 </script>
 
 </body>
