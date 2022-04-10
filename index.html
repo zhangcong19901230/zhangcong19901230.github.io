@@ -28,10 +28,13 @@
 	<script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.4.0.js"></script> 
     <script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js"></script>
 </head>
-<body>
+<body onload="get()">
 <div id='map'></div>
 <script>
-	console.log(window.location.href)
+	function get(){
+		console.log(window.location.href)
+	}
+	
     document.addEventListener('UniAppJSBridgeReady', function() {
         uni.getEnv(function(res) {
                                   console.log('当前环境：' + JSON.stringify(res));
