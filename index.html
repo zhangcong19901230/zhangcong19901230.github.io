@@ -92,6 +92,10 @@
     map.on('load', function () {
         map.on('click', (e) => {
             //window.postMessage("11","*")
+		uni.navigateTo({
+		   url: '/pages/index/map?id='+'ok'
+		});  
+
             uni.postMessage({
                 data: {
                     action: '息'
