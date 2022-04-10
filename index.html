@@ -31,12 +31,14 @@
 <body>
 <div id='map'></div>
 <script>
+	console.log(window.location.href)
     document.addEventListener('UniAppJSBridgeReady', function() {
         uni.getEnv(function(res) {
                                   console.log('当前环境：' + JSON.stringify(res));
          });  
 
     });
+	
     mapboxgl.accessToken = 'pk.eyJ1Ijoiemhhbmdjb25nMTk5MDEyMzAiLCJhIjoiY2p5aWJ2a3RlMDh0YjNjangxYmI5cXViMSJ9.RkyTKOoRzQfoXAqs3GamLA';
     //天地图（各个区域的token可以在网上查到）
      var vecUrl = "http://t0.tianditu.com/vec_w/wmts?tk=e90d56e5a09d1767899ad45846b0cefd";
