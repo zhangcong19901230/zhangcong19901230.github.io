@@ -6,7 +6,7 @@
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <style>
         body { margin:0; padding:0; }
         #map { height: 500px}
@@ -25,71 +25,79 @@
     </style>
     <script src="jquery.min.js"></script>
     <!-- 微信 JS-SDK  -->
-	<script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.4.0.js"></script> 
+    <script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
     <script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js"></script>
 </head>
 <body onload="getjj()">
 <div id='map'></div>
-	</body>
+<div style="position: absolute;top: 20%;left:20%;" onclick="change()">菜单</div>
+</body>
 <script>
-	function getjj(){
-		alert(window.location.href)
-	}
-	
+    function change() {
+        uni.postMessage({
+         data: {
+            action: '息'
+          }
+        });
+    }
+    function getjj(){
+        alert(window.location.href)
+    }
+
     document.addEventListener('UniAppJSBridgeReady', function() {
         uni.getEnv(function(res) {
-                                  alert('当前环境：' + JSON.stringify(res));
-         });  
+            alert('当前环境：' + JSON.stringify(res));
+        });
 
     });
-	
+
     mapboxgl.accessToken = 'pk.eyJ1Ijoiemhhbmdjb25nMTk5MDEyMzAiLCJhIjoiY2p5aWJ2a3RlMDh0YjNjangxYmI5cXViMSJ9.RkyTKOoRzQfoXAqs3GamLA';
     //天地图（各个区域的token可以在网上查到）
-     var vecUrl = "http://t0.tianditu.com/vec_w/wmts?tk=e90d56e5a09d1767899ad45846b0cefd";
-     var cvaUrl = "http://t0.tianditu.com/cva_w/wmts?tk=e90d56e5a09d1767899ad45846b0cefd";
-     //使用严格模式
-     "use strict";
-     //实例化source对象
-     var tdtVec = {
-             "type": "raster",
-             'tiles': [
-                 vecUrl + "&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=tiles"
-              ],
-             'tileSize': 256
-     };
-     var tdtCva = {
-             "type": "raster",
-             'tiles': [
-                  cvaUrl + "&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=tiles"
-              ],
-             'tileSize': 256
-     };
+    var vecUrl = "http://t0.tianditu.com/vec_w/wmts?tk=e90d56e5a09d1767899ad45846b0cefd";
+    var cvaUrl = "http://t0.tianditu.com/cva_w/wmts?tk=e90d56e5a09d1767899ad45846b0cefd";
+    //使用严格模式
+    "use strict";
+    //实例化source对象
+    var tdtVec = {
+        "type": "raster",
+        'tiles': [
+            vecUrl + "&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=tiles"
+        ],
+        'tileSize': 256
+    };
+    var tdtCva = {
+        "type": "raster",
+        'tiles': [
+            cvaUrl + "&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=tiles"
+        ],
+        'tileSize': 256
+    };
     var map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/satellite-streets-v11',
-  /*      style: {
-                "version": 8,
-                "sources": {
-                "tdtVec": tdtVec,
-                "tdtCva": tdtCva
-        },
-        "layers": [
-                 {
-                     "id": "tdtVec",
-                     "type": "raster",
-                     "source": "tdtVec",
-                     "minzoom": 0,
-                     "maxzoom": 22
-                    },
-                 {
-                      "id": "tdtCva",
-                     "type": "raster",
-                     "source": "tdtCva",
-                     "minzoom": 0,
-                     "maxzoom": 22
-             }
-        ],
-    },*/
+        /*      style: {
+                      "version": 8,
+                      "sources": {
+                      "tdtVec": tdtVec,
+                      "tdtCva": tdtCva
+              },
+              "layers": [
+                       {
+                           "id": "tdtVec",
+                           "type": "raster",
+                           "source": "tdtVec",
+                           "minzoom": 0,
+                           "maxzoom": 22
+                          },
+                       {
+                            "id": "tdtCva",
+                           "type": "raster",
+                           "source": "tdtCva",
+                           "minzoom": 0,
+                           "maxzoom": 22
+                   }
+              ],
+          },*/
         center: [117.07822, 32.16236],
         zoom: 15.7,
         pitch: 10,
@@ -99,16 +107,16 @@
     map.on('load', function () {
         map.on('click', (e) => {
             //window.postMessage("11","*")
-		uni.navigateTo({
-		   url: '/pages/index/map?id='+'ok'
-		});  
-		
-		
-           // uni.postMessage({
-              //  data: {
-              //    //  action: '息'
-               // }
-           // });
+            uni.navigateTo({
+                url: '/pages/index/map?id='+'ok'
+            });
+
+
+            // uni.postMessage({
+            //  data: {
+            //    //  action: '息'
+            // }
+            // });
 
         });
     })
